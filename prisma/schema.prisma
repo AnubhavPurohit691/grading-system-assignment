@@ -1,0 +1,129 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  username  String
+  email     String   @unique
+  password  String
+  role      Role
+  teacher   Teacher?
+  student   Student?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@map("user")
+}
+
+enum Role {
+  TEACHER
+  STUDENT
+}
+
+model Student {
+  id            String    @id @default(uuid())
+  userId        String    @unique
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  teacherId     String?
+  teacher       Teacher?  @relation(fields: [teacherId], references: [id], onDelete: SetNull)
+  submissions   Submission[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  @@map("student")
+}
+
+model Teacher {
+  id             String         @id @default(uuid())
+  userId         String         @unique
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questionPapers QuestionPaper[]
+  students       Student[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  @@map("teacher")
+}
+
+model QuestionPaper {
+  id           String       @id @default(uuid())
+  name         String
+  description  String?
+  teacherId    String?
+  teacher      Teacher?     @relation(fields: [teacherId], references: [id], onDelete: SetNull)
+  questions    Question[]
+  submissions  Submission[]
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  @@index([teacherId])
+  @@map("question_paper")
+}
+
+model Submission {
+  id              String   @id @default(uuid())
+  studentId       String
+  student         Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  questionPaperId String
+  questionPaper   QuestionPaper @relation(fields: [questionPaperId], references: [id], onDelete: Cascade)
+  score           Float?
+  submittedAt     DateTime @default(now())
+  aiScore         Float?   
+  plagiarismScore Float?   
+  isFlagged       Boolean  @default(false)
+  letterGrade     LetterGrade?
+  checkedAt       DateTime?
+  studentAnswers  StudentAnswer[]
+  @@map("submission")
+  @@index([studentId])
+  @@index([questionPaperId])
+  @@index([studentId, questionPaperId])
+  @@index([submittedAt])
+}
+
+model Question{
+  id              String   @id @default(uuid())
+  question        String   @db.Text
+  options         Json?
+  answer          String? @db.Text
+  points          Int      @default(0)
+  sortOrder       Int      @default(0) 
+  questionPaper   QuestionPaper @relation(fields: [questionPaperId], references: [id], onDelete: Cascade)
+  questionPaperId String
+  createdAt       DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  studentAnswers  StudentAnswer[]
+  @@map("question")
+  @@index([questionPaperId, sortOrder])
+}
+
+model StudentAnswer{
+  id             String    @id @default(uuid())
+  submissionId   String
+  submission     Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  questionId     String
+  question       Question   @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  answer         String     @db.Text
+  pointsEarned  Int?
+  isCorrect      Boolean   @default(false)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  @@unique([submissionId, questionId])
+  @@map("student_answer")
+  @@index([submissionId])
+}
+
+enum LetterGrade{
+  E
+  A_PLUS
+  A
+  B_PLUS
+  B
+  C_PLUS
+  C
+  D_PLUS
+  D
+  F
+}
