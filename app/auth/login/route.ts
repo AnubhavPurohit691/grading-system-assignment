@@ -45,8 +45,23 @@ export async function POST(request: Request) {
                 { status: 401 }
             );
         }
+        let teacherId: string | undefined;
+        let studentId: string | undefined;
+        if (user.role === "TEACHER") {
+            const t = await prisma.teacher.findUnique({
+                where: { userId: user.id },
+                select: { id: true },
+            });
+            teacherId = t?.id;
+        } else if (user.role === "STUDENT") {
+            const s = await prisma.student.findUnique({
+                where: { userId: user.id },
+                select: { id: true },
+            });
+            studentId = s?.id;
+        }
         const token = jwt.sign(
-            { userId: user.id, role: user.role },
+            { userId: user.id, role: user.role, teacherId, studentId },
             jwtSecret,
             { expiresIn: "30d" }
         );

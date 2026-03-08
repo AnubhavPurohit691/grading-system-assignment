@@ -35,24 +35,31 @@ export async function POST(request: Request) {
         const hashedPassword = await bcrypt.hash(password, 10);
         const COOKIE_MAX_AGE = 60 * 60 * 24 * 30; 
         console.log("till cookie max age");
-        const user = await prisma.$transaction(async (tx) => {
+        const result = await prisma.$transaction(async (tx) => {
             const u = await tx.user.create({
                 data: { email, password: hashedPassword, role, username },
                 select: { id: true, username: true, email: true, role: true, createdAt: true },
             });
-            const profileData = { userId: u.id };
-            if (role === "TEACHER") await tx.teacher.create({ data: profileData });
-            else if (role === "STUDENT") await tx.student.create({ data: profileData });
-            return u;
+            if (role === "TEACHER") {
+                const t = await tx.teacher.create({ data: { userId: u.id } });
+                return { user: u, teacherId: t.id, studentId: undefined };
+            } else {
+                const s = await tx.student.create({ data: { userId: u.id } });
+                return { user: u, teacherId: undefined, studentId: s.id };
+            }
         });
-        console.log("till user created");
         const token = jwt.sign(
-            { userId: user.id, role: user.role },
+            {
+                userId: result.user.id,
+                role: result.user.role,
+                teacherId: result.teacherId,
+                studentId: result.studentId,
+            },
             jwtSecret,
             { expiresIn: "30d" }
         );
         const response = NextResponse.json(
-            { message: "User created successfully", user },
+            { message: "User created successfully", user: result.user },
             { status: 201 }
         );
         console.log("till response");
