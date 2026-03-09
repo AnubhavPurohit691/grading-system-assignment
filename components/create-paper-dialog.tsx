@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useActionState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -13,49 +15,37 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { createPaperAction } from "@/lib/actions/papers";
 
 export function CreatePaperDialog({
   open,
   onOpenChange,
-  onCreated,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onCreated: () => void;
+  onCreated?: () => void;
 }) {
+  const router = useRouter();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [loading, setLoading] = useState(false);
+  const submittedRef = useRef(false);
 
-  async function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!name.trim()) return;
-    setLoading(true);
-    try {
-      const res = await fetch("/api/question-papers", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          name: name.trim(),
-          description: description.trim() || undefined,
-        }),
-      });
-      if (!res.ok) {
-        const data = await res.json();
-        toast.error(data.message ?? "Failed to create");
-        return;
+  const [state, formAction, isPending] = useActionState(createPaperAction, {});
+
+  useEffect(() => {
+    if (!isPending && submittedRef.current) {
+      submittedRef.current = false;
+      if (state?.error) {
+        toast.error(state.error);
+      } else {
+        toast.success("Paper created");
+        setName("");
+        setDescription("");
+        onOpenChange(false);
+        router.refresh();
       }
-      toast.success("Paper created");
-      setName("");
-      setDescription("");
-      onCreated();
-    } catch {
-      toast.error("Something went wrong");
-    } finally {
-      setLoading(false);
     }
-  }
+  }, [isPending, state, onOpenChange, router]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -66,12 +56,18 @@ export function CreatePaperDialog({
             Add a name and optional description.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={onSubmit}>
+        <form
+          action={formAction}
+          onSubmit={() => {
+            submittedRef.current = true;
+          }}
+        >
           <div className="grid gap-4 py-2 sm:py-4">
             <div className="space-y-2">
               <Label htmlFor="name">Name</Label>
               <Input
                 id="name"
+                name="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. Math Midterm 2025"
@@ -82,6 +78,7 @@ export function CreatePaperDialog({
               <Label htmlFor="description">Description (optional)</Label>
               <Input
                 id="description"
+                name="description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Brief description"
@@ -96,8 +93,8 @@ export function CreatePaperDialog({
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={loading}>
-              {loading ? "Creating…" : "Create"}
+            <Button type="submit" disabled={isPending}>
+              {isPending ? "Creating…" : "Create"}
             </Button>
           </DialogFooter>
         </form>

@@ -1,26 +1,10 @@
 import Link from "next/link";
 import { FileQuestion } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cookies } from "next/headers";
+import { getCurrentUser } from "@/lib/auth-server";
 
 export default async function Home() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("gradingtoken")?.value;
-  let user: { username: string } | null = null;
-  if (token) {
-    try {
-      const base = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
-      const res = await fetch(`${base}/api/auth/me`, {
-        headers: { cookie: `gradingtoken=${token}` },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        user = data.user ? { username: data.user.username } : null;
-      }
-    } catch {
-      user = null;
-    }
-  }
+  const user = await getCurrentUser();
 
   return (
     <section className="flex min-h-[calc(100vh-8rem)] flex-col items-center justify-center px-2 py-12 text-center sm:py-16 lg:py-20">
@@ -41,7 +25,10 @@ export default async function Home() {
           <div className="flex w-full max-w-xs flex-col gap-4">
             <p className="text-sm text-muted-foreground">
               Welcome back,{" "}
-              <span className="font-medium text-foreground">{user.username}</span>.
+              <span className="font-medium text-foreground">
+                {user.username}
+              </span>
+              .
             </p>
             <Button asChild className="w-full sm:w-auto">
               <Link href="/question-papers">Go to question papers</Link>

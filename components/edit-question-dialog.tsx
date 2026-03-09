@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useActionState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -13,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { updateQuestionAction } from "@/lib/actions/papers";
 
 type Question = {
   id: string;
@@ -27,18 +30,23 @@ export function EditQuestionDialog({
   question,
   open,
   onOpenChange,
-  onSaved,
 }: {
   paperId: string;
   question: Question;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSaved: () => void;
+  onSaved?: () => void;
 }) {
+  const router = useRouter();
   const [questionText, setQuestionText] = useState(question.question);
   const [answer, setAnswer] = useState(question.answer ?? "");
   const [points, setPoints] = useState(question.points);
-  const [loading, setLoading] = useState(false);
+  const submittedRef = useRef(false);
+
+  const [state, formAction, isPending] = useActionState(
+    updateQuestionAction.bind(null, paperId, question.id),
+    {}
+  );
 
   useEffect(() => {
     setQuestionText(question.question);
@@ -46,37 +54,18 @@ export function EditQuestionDialog({
     setPoints(question.points);
   }, [question]);
 
-  async function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!questionText.trim()) return;
-    setLoading(true);
-    try {
-      const res = await fetch(
-        `/api/question-papers/${paperId}/questions/${question.id}`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({
-            question: questionText.trim(),
-            answer: answer.trim() || null,
-            points: Math.max(0, points),
-          }),
-        }
-      );
-      if (!res.ok) {
-        const data = await res.json();
-        toast.error(data.message ?? "Failed to update");
-        return;
+  useEffect(() => {
+    if (!isPending && submittedRef.current) {
+      submittedRef.current = false;
+      if (state?.error) {
+        toast.error(state.error);
+      } else {
+        toast.success("Question updated");
+        onOpenChange(false);
+        router.refresh();
       }
-      toast.success("Question updated");
-      onSaved();
-    } catch {
-      toast.error("Something went wrong");
-    } finally {
-      setLoading(false);
     }
-  }
+  }, [isPending, state, onOpenChange, router]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -87,12 +76,18 @@ export function EditQuestionDialog({
             Update the question text, answer, and points.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={onSubmit}>
+        <form
+          action={formAction}
+          onSubmit={() => {
+            submittedRef.current = true;
+          }}
+        >
           <div className="grid gap-4 py-2 sm:py-4">
             <div className="space-y-2">
               <Label htmlFor="eq-text">Question</Label>
               <Input
                 id="eq-text"
+                name="question"
                 value={questionText}
                 onChange={(e) => setQuestionText(e.target.value)}
                 required
@@ -102,6 +97,7 @@ export function EditQuestionDialog({
               <Label htmlFor="eq-answer">Answer (optional)</Label>
               <Input
                 id="eq-answer"
+                name="answer"
                 value={answer}
                 onChange={(e) => setAnswer(e.target.value)}
               />
@@ -110,6 +106,7 @@ export function EditQuestionDialog({
               <Label htmlFor="eq-points">Points</Label>
               <Input
                 id="eq-points"
+                name="points"
                 type="number"
                 min={0}
                 value={points}
@@ -125,8 +122,8 @@ export function EditQuestionDialog({
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={loading}>
-              {loading ? "Saving…" : "Save"}
+            <Button type="submit" disabled={isPending}>
+              {isPending ? "Saving…" : "Save"}
             </Button>
           </DialogFooter>
         </form>
