@@ -50,12 +50,12 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-    matcher: [
-        "/question-papers/:path*",
-        "/teacher/:path*",
-        "/student/:path*",
-        "/submissions/:path*",
-    ],
+  matcher: [
+    "/api/question-papers/:path*",
+    "/teacher/:path*",
+    "/student/:path*",
+    "/submissions/:path*",
+  ],
 };
 
 export function getAuthFromRequest(request: Request): AuthContext | null {
