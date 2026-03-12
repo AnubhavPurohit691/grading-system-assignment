@@ -387,6 +387,7 @@ export const ModelName = {
   User: 'User',
   Student: 'Student',
   Teacher: 'Teacher',
+  StudentInvite: 'StudentInvite',
   QuestionPaper: 'QuestionPaper',
   Submission: 'Submission',
   Question: 'Question',
@@ -406,7 +407,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "student" | "teacher" | "questionPaper" | "submission" | "question" | "studentAnswer"
+    modelProps: "user" | "student" | "teacher" | "studentInvite" | "questionPaper" | "submission" | "question" | "studentAnswer"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -629,6 +630,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.TeacherCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.TeacherCountAggregateOutputType> | number
+        }
+      }
+    }
+    StudentInvite: {
+      payload: Prisma.$StudentInvitePayload<ExtArgs>
+      fields: Prisma.StudentInviteFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.StudentInviteFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentInvitePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.StudentInviteFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentInvitePayload>
+        }
+        findFirst: {
+          args: Prisma.StudentInviteFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentInvitePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.StudentInviteFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentInvitePayload>
+        }
+        findMany: {
+          args: Prisma.StudentInviteFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentInvitePayload>[]
+        }
+        create: {
+          args: Prisma.StudentInviteCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentInvitePayload>
+        }
+        createMany: {
+          args: Prisma.StudentInviteCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.StudentInviteCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentInvitePayload>[]
+        }
+        delete: {
+          args: Prisma.StudentInviteDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentInvitePayload>
+        }
+        update: {
+          args: Prisma.StudentInviteUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentInvitePayload>
+        }
+        deleteMany: {
+          args: Prisma.StudentInviteDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.StudentInviteUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.StudentInviteUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentInvitePayload>[]
+        }
+        upsert: {
+          args: Prisma.StudentInviteUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentInvitePayload>
+        }
+        aggregate: {
+          args: Prisma.StudentInviteAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateStudentInvite>
+        }
+        groupBy: {
+          args: Prisma.StudentInviteGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.StudentInviteGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.StudentInviteCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.StudentInviteCountAggregateOutputType> | number
         }
       }
     }
@@ -1001,6 +1076,19 @@ export const TeacherScalarFieldEnum = {
 export type TeacherScalarFieldEnum = (typeof TeacherScalarFieldEnum)[keyof typeof TeacherScalarFieldEnum]
 
 
+export const StudentInviteScalarFieldEnum = {
+  id: 'id',
+  token: 'token',
+  email: 'email',
+  teacherId: 'teacherId',
+  expiresAt: 'expiresAt',
+  usedAt: 'usedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type StudentInviteScalarFieldEnum = (typeof StudentInviteScalarFieldEnum)[keyof typeof StudentInviteScalarFieldEnum]
+
+
 export const QuestionPaperScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -1307,6 +1395,7 @@ export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   student?: Prisma.StudentOmit
   teacher?: Prisma.TeacherOmit
+  studentInvite?: Prisma.StudentInviteOmit
   questionPaper?: Prisma.QuestionPaperOmit
   submission?: Prisma.SubmissionOmit
   question?: Prisma.QuestionOmit

@@ -19,7 +19,7 @@ export function LoginForm() {
   const [state, formAction, isPending] = useActionState(loginAction, {});
 
   return (
-    <Card className="w-full max-w-md">
+    <Card className="w-full max-w-md opacity-0 animate-fade-in-up">
       <CardHeader className="space-y-1.5 pb-4">
         <CardTitle className="text-xl sm:text-2xl">Log in</CardTitle>
         <CardDescription>Enter your email and password.</CardDescription>

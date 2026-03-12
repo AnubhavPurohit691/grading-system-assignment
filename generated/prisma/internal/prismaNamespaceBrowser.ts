@@ -54,6 +54,7 @@ export const ModelName = {
   User: 'User',
   Student: 'Student',
   Teacher: 'Teacher',
+  StudentInvite: 'StudentInvite',
   QuestionPaper: 'QuestionPaper',
   Submission: 'Submission',
   Question: 'Question',
@@ -108,6 +109,19 @@ export const TeacherScalarFieldEnum = {
 } as const
 
 export type TeacherScalarFieldEnum = (typeof TeacherScalarFieldEnum)[keyof typeof TeacherScalarFieldEnum]
+
+
+export const StudentInviteScalarFieldEnum = {
+  id: 'id',
+  token: 'token',
+  email: 'email',
+  teacherId: 'teacherId',
+  expiresAt: 'expiresAt',
+  usedAt: 'usedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type StudentInviteScalarFieldEnum = (typeof StudentInviteScalarFieldEnum)[keyof typeof StudentInviteScalarFieldEnum]
 
 
 export const QuestionPaperScalarFieldEnum = {

@@ -38,14 +38,29 @@ model Student {
 }
 
 model Teacher {
-  id             String         @id @default(uuid())
-  userId         String         @unique
-  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id             String          @id @default(uuid())
+  userId         String          @unique
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   questionPapers QuestionPaper[]
   students       Student[]
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+  invites        StudentInvite[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
   @@map("teacher")
+}
+
+model StudentInvite {
+  id        String    @id @default(uuid())
+  token     String    @unique
+  email     String
+  teacherId String
+  teacher   Teacher   @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+  @@index([teacherId])
+  @@index([token])
+  @@map("student_invite")
 }
 
 model QuestionPaper {

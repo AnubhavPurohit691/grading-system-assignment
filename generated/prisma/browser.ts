@@ -33,6 +33,11 @@ export type Student = Prisma.StudentModel
  */
 export type Teacher = Prisma.TeacherModel
 /**
+ * Model StudentInvite
+ * 
+ */
+export type StudentInvite = Prisma.StudentInviteModel
+/**
  * Model QuestionPaper
  * 
  */

@@ -9,6 +9,7 @@ import {
   ListOrdered,
   Pencil,
   Plus,
+  Sparkles,
   Trash2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -59,6 +60,7 @@ import {
   deletePaperAction,
   deleteQuestionAction,
 } from "@/lib/actions/papers";
+import { PaperSubmissionsList } from "@/components/paper-submissions-list";
 
 export function PaperDetailClient({
   paperId,
@@ -73,6 +75,11 @@ export function PaperDetailClient({
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [createQuestionOpen, setCreateQuestionOpen] = useState(false);
+  const [generateOpen, setGenerateOpen] = useState(false);
+  const [generateTopic, setGenerateTopic] = useState("");
+  const [generateMcqCount, setGenerateMcqCount] = useState(2);
+  const [generateLongCount, setGenerateLongCount] = useState(2);
+  const [generateLoading, setGenerateLoading] = useState(false);
   const [editingQuestion, setEditingQuestion] = useState<PaperDetailDTO["questions"][number] | null>(null);
 
   async function handleDeletePaper() {
@@ -98,10 +105,48 @@ export function PaperDetailClient({
     }
   }
 
+  async function handleGenerateQuestions() {
+    const topic = generateTopic.trim();
+    if (!topic) {
+      toast.error("Enter a topic");
+      return;
+    }
+    const mcqCount = Math.max(0, Math.min(20, generateMcqCount));
+    const longCount = Math.max(0, Math.min(20, generateLongCount));
+    if (mcqCount + longCount < 1) {
+      toast.error("Add at least 1 MCQ or 1 long question");
+      return;
+    }
+    setGenerateLoading(true);
+    try {
+      const res = await fetch(`/api/question-papers/${paperId}/generate-questions`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ topic, mcqCount, longCount }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        toast.error(data.message ?? "Generation failed");
+        return;
+      }
+      toast.success(`Added ${data.count ?? 0} questions`);
+      setGenerateOpen(false);
+      setGenerateTopic("");
+      setGenerateMcqCount(2);
+      setGenerateLongCount(2);
+      router.refresh();
+    } catch {
+      toast.error("Request failed");
+    } finally {
+      setGenerateLoading(false);
+    }
+  }
+
   const questions = paper.questions ?? [];
 
   return (
-    <div className="space-y-6 sm:space-y-8">
+    <div className="space-y-6 sm:space-y-8 relative">
       <div className="flex flex-wrap items-start gap-3 sm:items-center sm:gap-4">
         <Button variant="ghost" size="icon" className="shrink-0" asChild>
           <Link href="/question-papers">
@@ -109,7 +154,7 @@ export function PaperDetailClient({
           </Link>
         </Button>
         <div className="min-w-0 flex-1">
-          <h1 className="break-words text-xl font-bold tracking-tight sm:text-2xl">
+          <h1 className="break-words text-xl font-bold tracking-tight sm:text-2xl bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
             {paper.name}
           </h1>
           {paper.description && (
@@ -120,16 +165,16 @@ export function PaperDetailClient({
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="icon" className="shrink-0">
+            <Button variant="outline" size="icon" className="shrink-0 rounded-none border-border">
               <Pencil className="size-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => setEditOpen(true)}>
+          <DropdownMenuContent align="end" className="rounded-none border-border">
+            <DropdownMenuItem onClick={() => setEditOpen(true)} className="rounded-none">
               Edit paper
             </DropdownMenuItem>
             <DropdownMenuItem
-              className="text-destructive focus:text-destructive"
+              className="text-destructive focus:text-destructive rounded-none"
               onClick={() => setDeleteConfirmOpen(true)}
             >
               Delete paper
@@ -138,25 +183,38 @@ export function PaperDetailClient({
         </DropdownMenu>
       </div>
 
-      <Card>
+      <Card className="rounded-none border border-border shadow-sm group">
         <CardHeader className="flex flex-col gap-4 pb-2 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
-          <div className="min-w-0">
-            <CardTitle className="flex items-center gap-2">
+          <div className="min-w-0 flex-1">
+            <CardTitle className="flex items-center gap-2 text-foreground group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
               <ListOrdered className="size-5 shrink-0" />
               Questions
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="mt-1">
               {questions.length} question{questions.length !== 1 ? "s" : ""} in
               this paper.
             </CardDescription>
           </div>
-          <Button
-            onClick={() => setCreateQuestionOpen(true)}
-            className="w-full shrink-0 gap-2 sm:w-auto"
-          >
-            <Plus className="size-4" />
-            Add question
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setGenerateOpen(true)}
+              className="gap-2 rounded-none border-border"
+            >
+              <Sparkles className="size-4" />
+              Generate with AI
+            </Button>
+            <div className="relative group/btn w-full sm:w-auto">
+              <div className="absolute -inset-[2px] bg-gradient-to-r from-cyan-500 via-purple-500 to-fuchsia-500 animate-gradient-xy opacity-70 group-hover/btn:opacity-100 transition-opacity blur-sm" />
+              <Button
+                onClick={() => setCreateQuestionOpen(true)}
+                className="relative w-full shrink-0 gap-2 sm:w-auto bg-background text-foreground hover:bg-background transition-transform group-hover/btn:scale-[1.02] rounded-none shadow-none border border-border/50"
+              >
+                <Plus className="size-4 text-cyan-500" />
+                <span className="bg-gradient-to-r from-cyan-600 to-fuchsia-600 dark:from-cyan-400 dark:to-fuchsia-400 bg-clip-text text-transparent animate-gradient-text font-bold">Add question</span>
+              </Button>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           {questions.length === 0 ? (
@@ -168,7 +226,7 @@ export function PaperDetailClient({
               {questions.map((q, i) => (
                 <li
                   key={q.id}
-                  className="flex flex-col gap-3 rounded-lg border border-border p-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4 sm:p-4"
+                  className="flex flex-col gap-3 rounded-none border border-border bg-card p-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4 sm:p-4"
                 >
                   <div className="min-w-0 flex-1">
                     <span className="text-sm font-medium text-muted-foreground">
@@ -179,6 +237,7 @@ export function PaperDetailClient({
                     </p>
                     <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
                       {q.points} pt{q.points !== 1 ? "s" : ""}
+                      {Array.isArray(q.options) && (q.options as string[]).length >= 2 && " · MCQ"}
                       {q.answer && ` · Answer: ${q.answer}`}
                     </p>
                   </div>
@@ -205,6 +264,8 @@ export function PaperDetailClient({
           )}
         </CardContent>
       </Card>
+
+      <PaperSubmissionsList paperId={paperId} />
 
       <EditPaperDialog
         paperId={paperId}
@@ -249,6 +310,68 @@ export function PaperDetailClient({
           if (!open) router.refresh();
         }}
       />
+
+      <Dialog open={generateOpen} onOpenChange={setGenerateOpen}>
+        <DialogContent className="rounded-none border-border">
+          <DialogHeader>
+            <DialogTitle>Generate questions with AI</DialogTitle>
+            <DialogDescription>Topic + how many MCQs and long questions you want.</DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-2">
+            <div className="space-y-2">
+              <Label htmlFor="generate-topic">Topic</Label>
+              <Input
+                id="generate-topic"
+                placeholder="e.g. Photosynthesis, Quadratic equations"
+                value={generateTopic}
+                onChange={(e) => setGenerateTopic(e.target.value)}
+                disabled={generateLoading}
+                className="rounded-none border-border"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="generate-mcq">MCQs</Label>
+                <Input
+                  id="generate-mcq"
+                  type="number"
+                  min={0}
+                  max={20}
+                  value={generateMcqCount}
+                  onChange={(e) => setGenerateMcqCount(Number(e.target.value) || 0)}
+                  disabled={generateLoading}
+                  className="rounded-none border-border"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="generate-long">Long</Label>
+                <Input
+                  id="generate-long"
+                  type="number"
+                  min={0}
+                  max={20}
+                  value={generateLongCount}
+                  onChange={(e) => setGenerateLongCount(Number(e.target.value) || 0)}
+                  disabled={generateLoading}
+                  className="rounded-none border-border"
+                />
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setGenerateOpen(false)} disabled={generateLoading} className="rounded-none">
+              Cancel
+            </Button>
+            <Button
+              onClick={handleGenerateQuestions}
+              disabled={generateLoading || generateMcqCount + generateLongCount < 1}
+              className="rounded-none"
+            >
+              {generateLoading ? "Generating…" : "Generate"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {editingQuestion && (
         <EditQuestionDialog

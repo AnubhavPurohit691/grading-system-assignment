@@ -82,6 +82,7 @@ export async function signupAction(
   const password = formData.get("password") as string;
   const username = (formData.get("username") as string)?.trim();
   const role = formData.get("role") as string;
+  const inviteToken = (formData.get("inviteToken") as string)?.trim() || null;
 
   if (!email || !password || !username || !role) {
     return { error: "Email, password, username and role are required" };
@@ -112,6 +113,29 @@ export async function signupAction(
       return { user: u, teacherId: undefined, studentId: s.id };
     }
   });
+
+  if (inviteToken && result.studentId && roleValue === "STUDENT") {
+    const inv = await prisma.studentInvite.findUnique({
+      where: { token: inviteToken },
+    });
+    if (
+      inv &&
+      !inv.usedAt &&
+      inv.expiresAt > new Date() &&
+      inv.email.toLowerCase() === email.toLowerCase()
+    ) {
+      await prisma.$transaction([
+        prisma.student.update({
+          where: { id: result.studentId },
+          data: { teacherId: inv.teacherId },
+        }),
+        prisma.studentInvite.update({
+          where: { id: inv.id },
+          data: { usedAt: new Date() },
+        }),
+      ]);
+    }
+  }
 
   const token = jwt.sign(
     {

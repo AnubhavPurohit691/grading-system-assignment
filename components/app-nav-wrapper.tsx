@@ -5,7 +5,15 @@ export async function AppNavWrapper() {
   const user = await getCurrentUser();
   return (
     <AppNav
-      user={user ? { username: user.username, email: user.email } : null}
+      user={
+        user
+          ? {
+              username: user.username,
+              email: user.email,
+              role: user.role,
+            }
+          : null
+      }
     />
   );
 }

@@ -52,6 +52,9 @@ export function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     "/api/question-papers/:path*",
+    "/api/submissions/:path*",
+    "/api/teacher/:path*",
+    "/api/student/:path*",
     "/teacher/:path*",
     "/student/:path*",
     "/submissions/:path*",

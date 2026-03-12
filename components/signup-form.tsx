@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useState } from "react";
+import { useActionState, useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,16 +24,40 @@ import {
 import { signupAction } from "@/lib/actions/auth";
 
 export function SignupForm() {
+  const searchParams = useSearchParams();
+  const inviteToken = searchParams.get("invite")?.trim() ?? null;
+  const isInviteFlow = Boolean(inviteToken);
+
   const [role, setRole] = useState<"TEACHER" | "STUDENT">("TEACHER");
+  const [inviteEmail, setInviteEmail] = useState<string | null>(null);
+  const [inviteTeacherName, setInviteTeacherName] = useState<string | null>(null);
   const [state, formAction, isPending] = useActionState(signupAction, {});
 
+  const effectiveRole: "TEACHER" | "STUDENT" = isInviteFlow ? "STUDENT" : role;
+
+  useEffect(() => {
+    if (!inviteToken) return;
+    fetch(`/api/invite/${encodeURIComponent(inviteToken)}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data: { email?: string; teacherName?: string } | null) => {
+        if (data?.email) setInviteEmail(data.email);
+        if (data?.teacherName) setInviteTeacherName(data.teacherName);
+      })
+      .catch(() => {});
+  }, [inviteToken]);
+
   return (
-    <Card className="w-full max-w-md">
+    <Card className="w-full max-w-md opacity-0 animate-fade-in-up">
       <CardHeader className="space-y-1.5 pb-4">
         <CardTitle className="text-xl sm:text-2xl">Sign up</CardTitle>
-        <CardDescription>Create an account with email and role.</CardDescription>
+        <CardDescription>
+          {isInviteFlow && inviteTeacherName
+            ? `Join ${inviteTeacherName}'s class. Create your account.`
+            : "Create an account with email and role."}
+        </CardDescription>
       </CardHeader>
       <form action={formAction}>
+        {inviteToken && <input type="hidden" name="inviteToken" value={inviteToken} />}
         <CardContent className="space-y-4 pb-6">
           {state?.error && (
             <p className="text-sm text-destructive" role="alert">
@@ -59,6 +84,8 @@ export function SignupForm() {
               placeholder="you@example.com"
               required
               autoComplete="email"
+              value={isInviteFlow && inviteEmail ? inviteEmail : undefined}
+              readOnly={isInviteFlow && !!inviteEmail}
             />
           </div>
           <div className="space-y-2">
@@ -71,23 +98,26 @@ export function SignupForm() {
               autoComplete="new-password"
             />
           </div>
-          <div className="space-y-2">
-            <Label>Role</Label>
-            <Select
-              value={role}
-              onValueChange={(v) => setRole(v as "TEACHER" | "STUDENT")}
-              required
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="TEACHER">Teacher</SelectItem>
-                <SelectItem value="STUDENT">Student</SelectItem>
-              </SelectContent>
-            </Select>
-            <input type="hidden" name="role" value={role} />
-          </div>
+          {!isInviteFlow && (
+            <div className="space-y-2">
+              <Label>Role</Label>
+              <Select
+                value={role}
+                onValueChange={(v) => setRole(v as "TEACHER" | "STUDENT")}
+                required
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="TEACHER">Teacher</SelectItem>
+                  <SelectItem value="STUDENT">Student</SelectItem>
+                </SelectContent>
+              </Select>
+              <input type="hidden" name="role" value={role} />
+            </div>
+          )}
+          {isInviteFlow && <input type="hidden" name="role" value={effectiveRole} />}
         </CardContent>
         <CardFooter className="flex flex-col gap-4 pt-0">
           <Button type="submit" className="w-full" disabled={isPending}>

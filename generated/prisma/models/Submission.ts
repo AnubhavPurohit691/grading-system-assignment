@@ -597,10 +597,6 @@ export type NullableEnumLetterGradeFieldUpdateOperationsInput = {
   set?: $Enums.LetterGrade | null
 }
 
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
-}
-
 export type SubmissionCreateNestedOneWithoutStudentAnswersInput = {
   create?: Prisma.XOR<Prisma.SubmissionCreateWithoutStudentAnswersInput, Prisma.SubmissionUncheckedCreateWithoutStudentAnswersInput>
   connectOrCreate?: Prisma.SubmissionCreateOrConnectWithoutStudentAnswersInput

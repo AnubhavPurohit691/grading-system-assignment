@@ -17,8 +17,8 @@ export default function PaperDetailLoading() {
           <Skeleton className="h-4 w-48" />
         </CardHeader>
         <CardContent className="space-y-3">
-          <Skeleton className="h-20 w-full rounded-lg" />
-          <Skeleton className="h-20 w-full rounded-lg" />
+          <Skeleton className="h-20 w-full rounded-none" />
+          <Skeleton className="h-20 w-full rounded-none" />
         </CardContent>
       </Card>
     </div>

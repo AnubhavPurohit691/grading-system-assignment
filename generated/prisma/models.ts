@@ -11,6 +11,7 @@
 export type * from './models/User'
 export type * from './models/Student'
 export type * from './models/Teacher'
+export type * from './models/StudentInvite'
 export type * from './models/QuestionPaper'
 export type * from './models/Submission'
 export type * from './models/Question'
