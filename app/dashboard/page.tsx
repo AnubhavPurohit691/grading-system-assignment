@@ -1,9 +1,15 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getCurrentUser, getTeacherIdFromCookies, getStudentTeacher } from "@/lib/auth-server";
 import { TeacherAddStudent } from "@/components/landing/teacher-add-student";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { GraduationCap, UserPlus, ShieldCheck, ChevronRight } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Dashboard — Grading",
+  description: "Manage question papers or access your assigned papers.",
+};
 
 export default async function DashboardPage() {
   const user = await getCurrentUser();
