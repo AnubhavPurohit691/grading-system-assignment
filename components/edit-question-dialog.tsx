@@ -41,6 +41,7 @@ export function EditQuestionDialog({
   question,
   open,
   onOpenChange,
+  onSaved,
 }: {
   paperId: string;
   question: Question;
