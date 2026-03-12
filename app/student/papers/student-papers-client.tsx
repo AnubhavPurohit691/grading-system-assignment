@@ -2,15 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Loader2 } from "lucide-react";
+import { Loader2, FileText, ArrowRight, ClipboardCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 
 type Paper = {
   id: string;
@@ -45,81 +38,108 @@ export function StudentPapersClient() {
 
   if (error) {
     return (
-      <div className="space-y-6">
-        <h1 className="text-xl font-bold tracking-tight sm:text-2xl text-foreground">My papers</h1>
-        <Card className="border-l-4 border-l-amber border-border">
-          <CardContent className="py-8 text-center text-muted-foreground">
+      <div className="container pt-24 sm:pt-40 grid-bg min-h-screen">
+        <div className="max-w-2xl border-l-4 border-foreground pl-6">
+          <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mb-2">Error / System Access Denied</p>
+          <h1 className="text-4xl font-black tracking-tighter text-foreground uppercase italic mb-6">Access Blocked</h1>
+          <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground leading-relaxed">
             {error === "No teacher linked"
-              ? "You are not associated with a teacher. Ask your teacher to add you by email."
+              ? "Session not associated with instructor registry. Verification required."
               : error}
-          </CardContent>
-        </Card>
+          </p>
+        </div>
       </div>
     );
   }
 
   if (papers === null) {
     return (
-      <div className="flex min-h-[200px] items-center justify-center">
-        <Loader2 className="size-8 animate-spin text-violet" />
+      <div className="container flex min-h-screen flex-col items-center justify-start pt-24 sm:pt-40 grid-bg">
+        <div className="flex flex-col items-center gap-4">
+           <Loader2 className="size-8 animate-spin text-foreground" />
+           <span className="text-[10px] font-black uppercase tracking-[0.4em]">Syncing Registry...</span>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 sm:space-y-8">
-      <div className="opacity-0 animate-fade-in-up">
-        <h1 className="text-xl font-bold tracking-tight sm:text-2xl text-foreground">Question papers</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Click a paper to attempt it. You will get AI grading and a report card.
+    <div className="container pt-24 pb-12 sm:pt-40 sm:pb-20 animate-slide-up grid-bg min-h-screen">
+      <div className="mb-16 border-l-4 border-foreground pl-6">
+        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mb-2">
+          Assessment Portal / Student Interface
+        </p>
+        <h1 className="text-5xl font-black tracking-tighter text-foreground uppercase italic">
+          Question Papers
+        </h1>
+        <p className="mt-4 text-[11px] font-bold uppercase tracking-widest text-muted-foreground max-w-xl leading-relaxed">
+          Select a pending assessment unit to initialize evaluation. AI grading will be executed upon submission.
         </p>
       </div>
 
       {papers.length === 0 ? (
-        <Card className="border-l-4 border-l-teal border-border opacity-0 animate-fade-in-up animate-delay-1">
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <p className="text-sm text-muted-foreground">No papers from your teacher yet.</p>
-          </CardContent>
-        </Card>
+        <div className="border border-dashed border-foreground/20 p-16 text-center">
+          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground">
+            No active assessment units assigned.
+          </p>
+        </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {papers.map((paper, i) => (
-            <Card
+            <div
               key={paper.id}
-              className={`h-full transition-all duration-200 border-l-4 opacity-0 animate-fade-in-up ${paper.submissionId ? "border-l-teal" : "border-l-violet hover:bg-muted/50 hover:translate-y-[-2px]"}`}
-              style={{ animationDelay: `${0.1 + i * 0.05}s` }}
+              className={cn(
+                "group relative flex flex-col border p-8 transition-all h-full",
+                paper.submissionId 
+                  ? "border-foreground/10 bg-background/50" 
+                  : "border-foreground/20 bg-background hover:border-foreground"
+              )}
             >
-              <CardHeader className="pb-2">
-                <CardTitle className="line-clamp-1 text-base text-foreground">{paper.name}</CardTitle>
-                {paper.description && (
-                  <CardDescription className="line-clamp-2 text-xs">
-                    {paper.description}
-                  </CardDescription>
-                )}
-              </CardHeader>
-              <CardContent>
-                <p className="text-xs text-muted-foreground">
-                  {paper._count.questions} question{paper._count.questions !== 1 ? "s" : ""}
-                  {paper.submissionId != null && (
-                    <span className="ml-1">· Attempted</span>
-                  )}
+              <div className="flex justify-between items-start mb-6">
+                 <div className="h-10 w-10 border border-foreground/10 flex items-center justify-center group-hover:bg-foreground group-hover:text-background transition-colors">
+                    <FileText className="size-5" />
+                 </div>
+                 {paper.submissionId && (
+                   <span className="text-[8px] font-black uppercase tracking-widest bg-foreground text-background px-2 py-0.5">Evaluated</span>
+                 )}
+              </div>
+              
+              <h3 className="text-lg font-black uppercase tracking-tighter italic text-foreground mb-2 line-clamp-1">
+                {paper.name}
+              </h3>
+              {paper.description && (
+                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground line-clamp-2 leading-relaxed mb-6">
+                  {paper.description}
                 </p>
-                <div className="mt-3 flex gap-2">
+              )}
+              
+              <div className="mt-auto pt-6 border-t border-foreground/5">
+                <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground mb-4">
+                  Capacity: {paper._count.questions} Units
+                </p>
+                <div className="flex gap-2">
                   {paper.submissionId ? (
-                    <Button size="sm" className="flex-1 bg-teal hover:bg-teal/90 text-white border-0" asChild>
-                      <Link href={`/student/report/${paper.submissionId}`}>View report</Link>
+                    <Button variant="outline" size="sm" className="w-full h-10" asChild>
+                      <Link href={`/student/report/${paper.submissionId}`}>
+                        Analyze Report
+                        <ClipboardCheck className="ml-2 size-3" />
+                      </Link>
                     </Button>
                   ) : (
-                    <Button size="sm" className="w-full bg-violet hover:bg-violet/90 text-white border-0" asChild>
-                      <Link href={`/student/papers/${paper.id}`}>Attempt</Link>
+                    <Button size="sm" className="w-full h-10" asChild>
+                      <Link href={`/student/papers/${paper.id}`}>
+                        Initialize Attempt
+                        <ArrowRight className="ml-2 size-3" />
+                      </Link>
                     </Button>
                   )}
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           ))}
         </div>
       )}
     </div>
   );
 }
+

@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 export default function PaperDetailLoading() {
   return (
-    <div className="space-y-6 sm:space-y-8">
+    <div className="container pt-24 pb-12 sm:pt-40 sm:pb-20 animate-slide-up grid-bg min-h-screen">
       <div className="flex flex-wrap items-center gap-4">
         <Skeleton className="size-9 shrink-0" />
         <div className="min-w-0 space-y-2">

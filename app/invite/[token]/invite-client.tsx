@@ -14,7 +14,7 @@ export function InviteClient({ token, email, teacherName }: Props) {
   const signupUrl = `/auth/signup?invite=${encodeURIComponent(token)}`;
 
   return (
-    <div className="flex min-h-[60vh] flex-col items-center justify-center px-4">
+    <div className="flex min-h-screen flex-col items-center justify-start pt-24 pb-12 sm:pt-40 sm:pb-20 px-4 grid-bg">
       <div className="landing-card w-full max-w-md space-y-6 text-center opacity-0 animate-fade-in-up">
         <div className="mx-auto flex size-14 items-center justify-center rounded-none bg-foreground text-background">
           <UserPlus className="size-7" />

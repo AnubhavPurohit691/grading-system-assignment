@@ -36,94 +36,100 @@ export default async function DashboardPage() {
   const greeting = getGreeting();
 
   return (
-    <div className="min-h-[60vh]">
-      <div className="mb-10">
-        <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
-          {greeting}
+    <div className="container pt-24 pb-12 sm:pt-40 sm:pb-20 animate-slide-up grid-bg min-h-screen">
+      <div className="mb-16 border-l-4 border-foreground pl-6">
+        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mb-2">
+          {greeting} / Terminal Session Active
         </p>
-        <h1 className="mt-1 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+        <h1 className="text-5xl font-black tracking-tighter text-foreground uppercase italic">
           {user.username}
         </h1>
       </div>
 
       {teacherId ? (
-        <div className="grid gap-6 sm:grid-cols-2">
+        <div className="grid gap-8 sm:grid-cols-2">
           <Link
             href="/question-papers"
-            className="group relative flex flex-col rounded-2xl border border-border bg-card p-6 transition-all hover:border-foreground/20 hover:shadow-md"
+            className="group relative flex flex-col border border-foreground/10 bg-background p-8 transition-all hover:border-foreground"
           >
-            <div className="absolute right-4 top-4 rounded-full bg-foreground/5 p-2 transition-colors group-hover:bg-foreground/10">
-              <FileText className="size-5 text-foreground" />
+            <div className="absolute right-8 top-8 border border-foreground/10 p-3 transition-colors group-hover:bg-foreground group-hover:text-background">
+              <FileText className="size-6" />
             </div>
-            <h2 className="text-lg font-semibold text-foreground pr-12">
-              Question papers
+            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-4">Module 01</span>
+            <h2 className="text-2xl font-black uppercase tracking-tighter italic text-foreground mb-2">
+              Papers Archive
             </h2>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Create papers, add or generate questions, and view student reports.
+            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground leading-relaxed max-w-xs">
+              Interface for paper synthesis, question generation, and analytical reporting.
             </p>
-            <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-foreground">
-              Open
-              <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
-            </span>
+            <div className="mt-10 flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] group-hover:gap-4 transition-all">
+              Initialize
+              <ArrowRight className="size-3" />
+            </div>
           </Link>
 
-          <div className="flex flex-col rounded-2xl border border-border bg-card p-6">
-            <div className="flex items-center gap-2">
-              <div className="rounded-full bg-primary/10 p-2">
-                <UserPlus className="size-4 text-foreground" />
+          <div className="flex flex-col border border-foreground/10 bg-background p-8">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="border border-foreground/10 p-2">
+                <UserPlus className="size-5 text-foreground" />
               </div>
-              <h2 className="text-lg font-semibold text-foreground">
-                Add students
-              </h2>
+              <div>
+                <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest block">Module 02</span>
+                <h2 className="text-2xl font-black uppercase tracking-tighter italic text-foreground">
+                  Enrollment
+                </h2>
+              </div>
             </div>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Send an invite link or add by email to your class.
+            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground leading-relaxed mb-8">
+              Protocol for student participant registration via encoded invite links.
             </p>
-            <div className="mt-6 flex-1">
+            <div className="mt-auto">
               <TeacherAddStudent />
             </div>
           </div>
         </div>
       ) : studentTeacher ? (
-        <div className="max-w-xl">
-          <div className="rounded-2xl border border-border bg-card p-6 sm:p-8">
-            <div className="flex items-start gap-4">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-                <GraduationCap className="size-6 text-foreground" />
+        <div className="max-w-2xl">
+          <div className="border border-foreground bg-background p-10 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-foreground/5 -rotate-45 translate-x-16 -translate-y-16" />
+            <div className="flex flex-col sm:flex-row items-start gap-8 relative z-10">
+              <div className="flex h-16 w-16 shrink-0 items-center justify-center border-2 border-foreground bg-foreground text-background">
+                <GraduationCap className="size-8" />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-muted-foreground">
-                  Your teacher
-                </p>
-                <h2 className="mt-1 text-xl font-bold text-foreground">
+                <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2 block">Assigned Instructor</span>
+                <h2 className="text-3xl font-black uppercase tracking-tighter italic text-foreground">
                   {studentTeacher.user.username}
                 </h2>
-                <p className="mt-0.5 text-sm text-muted-foreground">
+                <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mt-1">
                   {studentTeacher.user.email}
                 </p>
-                <Button asChild size="lg" className="mt-6 gap-2" variant="default">
-                  <Link href="/student/papers">
-                    <Sparkles className="size-4" />
-                    My papers
-                    <ArrowRight className="size-4" />
-                  </Link>
-                </Button>
+                <div className="mt-10">
+                   <Button asChild size="lg" className="gap-3 group">
+                    <Link href="/student/papers">
+                      <Sparkles className="size-4" />
+                      Access Assessment Portal
+                      <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+                    </Link>
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
         </div>
       ) : (
-        <div className="max-w-md rounded-2xl border border-dashed border-border bg-muted/30 p-8 text-center">
-          <ShieldCheck className="mx-auto size-12 text-muted-foreground" />
-          <h2 className="mt-4 text-lg font-semibold text-foreground">
-            Awaiting invite
+        <div className="max-w-md border border-dashed border-foreground/30 bg-muted/20 p-12 text-center">
+          <ShieldCheck className="mx-auto size-12 text-muted-foreground mb-6" />
+          <h2 className="text-xl font-black uppercase tracking-tighter italic text-foreground">
+            Awaiting Clearance
           </h2>
-          <p className="mt-2 text-sm text-muted-foreground">
-            You’re signed in as <span className="font-medium text-foreground">{user.email}</span>.
-            Ask your teacher to send you an invite link to join their class.
+          <p className="mt-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground leading-relaxed">
+            Authorized session for <span className="text-foreground">{user.email}</span> is active. 
+            Awaiting instructor invitation for class enrollment.
           </p>
         </div>
       )}
     </div>
   );
 }
+

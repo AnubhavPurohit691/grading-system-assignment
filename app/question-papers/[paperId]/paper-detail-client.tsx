@@ -156,157 +156,158 @@ export function PaperDetailClient({
   const questions = paper.questions ?? [];
 
   return (
-    <div className="space-y-6 sm:space-y-8">
-      <div className="flex flex-wrap items-start gap-3 sm:items-center sm:gap-4">
-        <Button variant="ghost" size="icon" className="shrink-0" asChild>
-          <Link href="/question-papers">
-            <ArrowLeft className="size-4" />
-          </Link>
-        </Button>
-        <div className="min-w-0 flex-1">
-          <h1 className="break-words text-xl font-bold tracking-tight sm:text-2xl bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-            {paper.name}
-          </h1>
-          {paper.description && (
-            <p className="mt-1 break-words text-sm text-muted-foreground sm:text-base">
-              {paper.description}
-            </p>
-          )}
+    <div className="container pt-24 pb-12 sm:pt-40 sm:pb-20 animate-slide-up grid-bg min-h-screen">
+      <div className="flex flex-col gap-12">
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-l-4 border-foreground pl-6">
+          <div className="flex flex-col gap-4">
+            <Link href="/question-papers" className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground transition-colors">
+              <ArrowLeft className="size-3" />
+              Return to Registry
+            </Link>
+            <h1 className="text-4xl font-black tracking-tighter text-foreground uppercase italic leading-none">
+              {paper.name}
+            </h1>
+            {paper.description && (
+              <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground max-w-2xl leading-relaxed">
+                {paper.description}
+              </p>
+            )}
+          </div>
+          
+          <div className="flex items-center gap-3">
+             <Button variant="outline" size="sm" onClick={() => setEditOpen(true)} className="gap-2">
+                <Pencil className="size-3" />
+                Edit Unit
+             </Button>
+             <Button variant="outline" size="sm" onClick={() => setDeleteConfirmOpen(true)} className="text-destructive border-destructive/20 hover:bg-destructive hover:text-white">
+                <Trash2 className="size-3" />
+                Purge
+             </Button>
+          </div>
         </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="icon" className="shrink-0 rounded-none border-border">
-              <Pencil className="size-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="rounded-none border-border">
-            <DropdownMenuItem onClick={() => setEditOpen(true)} className="rounded-none">
-              Edit paper
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="text-destructive focus:text-destructive rounded-none"
-              onClick={() => setDeleteConfirmOpen(true)}
-            >
-              Delete paper
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
 
-      <div className="flex gap-1 rounded-lg bg-muted/60 p-1">
-        <button
-          type="button"
-          onClick={() => setActiveTab("questions")}
-          className={cn(
-            "flex flex-1 items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-medium transition-colors sm:flex-initial",
-            activeTab === "questions"
-              ? "bg-background text-foreground shadow-sm"
-              : "text-muted-foreground hover:text-foreground"
-          )}
-        >
-          <ListOrdered className="size-4 shrink-0" />
-          Questions
-        </button>
-        <button
-          type="button"
-          onClick={() => setActiveTab("students")}
-          className={cn(
-            "flex flex-1 items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-medium transition-colors sm:flex-initial",
-            activeTab === "students"
-              ? "bg-background text-foreground shadow-sm"
-              : "text-muted-foreground hover:text-foreground"
-          )}
-        >
-          <Users className="size-4 shrink-0" />
-          Student reports
-        </button>
-      </div>
+        {/* Tab Navigation */}
+        <div className="flex gap-4 border-b border-foreground/10 pb-px">
+          <button
+            type="button"
+            onClick={() => setActiveTab("questions")}
+            className={cn(
+              "px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] transition-all border-b-2 -mb-px",
+              activeTab === "questions"
+                ? "border-foreground text-foreground"
+                : "border-transparent text-muted-foreground hover:text-foreground"
+            )}
+          >
+            Questions List / {questions.length} Units
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("students")}
+            className={cn(
+              "px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] transition-all border-b-2 -mb-px",
+              activeTab === "students"
+                ? "border-foreground text-foreground"
+                : "border-transparent text-muted-foreground hover:text-foreground"
+            )}
+          >
+            Student Submissions / Evaluation
+          </button>
+        </div>
 
-      {activeTab === "students" && <PaperStudentSection paperId={paperId} />}
+        {activeTab === "students" && (
+           <div className="animate-reveal">
+             <PaperStudentSection paperId={paperId} />
+           </div>
+        )}
 
-      {activeTab === "questions" && (
-      <Card className="border border-border shadow-sm">
-        <CardHeader className="flex flex-col gap-4 pb-2 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
-          <div className="min-w-0 flex-1">
-            <CardTitle className="flex items-center gap-2 text-foreground">
-              <ListOrdered className="size-5 shrink-0" />
-              Questions
-            </CardTitle>
-            <CardDescription className="mt-1">
-              {questions.length} question{questions.length !== 1 ? "s" : ""} in
-              this paper.
-            </CardDescription>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <Button
-              variant="outline"
-              onClick={() => setGenerateOpen(true)}
-              className="gap-2 rounded-none border-border"
-            >
-              <Sparkles className="size-4" />
-              Generate with AI
-            </Button>
-            <div className="relative group/btn w-full sm:w-auto">
-              <div className="absolute -inset-[2px] bg-gradient-to-r from-cyan-500 via-purple-500 to-fuchsia-500 animate-gradient-xy opacity-70 group-hover/btn:opacity-100 transition-opacity blur-sm" />
-              <Button
-                onClick={() => setCreateQuestionOpen(true)}
-                className="relative w-full shrink-0 gap-2 sm:w-auto bg-background text-foreground hover:bg-background transition-transform group-hover/btn:scale-[1.02] rounded-none shadow-none border border-border/50"
-              >
-                <Plus className="size-4 text-cyan-500" />
-                <span className="bg-gradient-to-r from-cyan-600 to-fuchsia-600 dark:from-cyan-400 dark:to-fuchsia-400 bg-clip-text text-transparent animate-gradient-text font-bold">Add question</span>
-              </Button>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          {questions.length === 0 ? (
-            <p className="py-8 text-center text-sm text-muted-foreground sm:text-base">
-              No questions yet. Add one to get started.
-            </p>
-          ) : (
-            <ul className="space-y-3">
-              {questions.map((q, i) => (
-                <li
-                  key={q.id}
-                  className="flex flex-col gap-3 rounded-none border border-border bg-card p-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4 sm:p-4"
+        {activeTab === "questions" && (
+          <div className="animate-reveal flex flex-col gap-10">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+              <div className="flex items-center gap-4">
+                <div className="h-10 w-1 border-l-4 border-foreground" />
+                <div>
+                   <h2 className="text-2xl font-black uppercase tracking-tighter italic text-foreground">Question Set</h2>
+                   <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Unit Management / Sequence</p>
+                </div>
+              </div>
+              
+              <div className="flex flex-wrap gap-3">
+                <Button
+                  variant="outline"
+                  onClick={() => setGenerateOpen(true)}
+                  className="gap-2 h-11"
                 >
-                  <div className="min-w-0 flex-1">
-                    <span className="text-sm font-medium text-muted-foreground">
-                      Q{i + 1}.
-                    </span>
-                    <p className="mt-1 break-words text-sm sm:text-base">
-                      {q.question}
-                    </p>
-                    <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
-                      {q.points} pt{q.points !== 1 ? "s" : ""}
-                      {Array.isArray(q.options) && (q.options as string[]).length >= 2 && " · MCQ"}
-                      {q.answer && ` · Answer: ${q.answer}`}
-                    </p>
+                  <Sparkles className="size-4" />
+                  AI Synthesis
+                </Button>
+                <Button
+                  onClick={() => setCreateQuestionOpen(true)}
+                  className="gap-2 h-11"
+                >
+                  <Plus className="size-4" />
+                  Manual Entry
+                </Button>
+              </div>
+            </div>
+
+            {questions.length === 0 ? (
+              <div className="border border-dashed border-foreground/20 p-20 text-center">
+                <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
+                  Data Structure Empty / Awaiting Input
+                </p>
+              </div>
+            ) : (
+              <div className="grid gap-4">
+                {questions.map((q, i) => (
+                  <div
+                    key={q.id}
+                    className="flex flex-col sm:flex-row sm:items-start justify-between gap-6 border border-foreground/10 bg-background p-8 group hover:border-foreground transition-all"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-3 mb-3">
+                        <span className="text-[10px] font-black uppercase tracking-tighter bg-foreground text-background px-2 py-0.5">
+                          U-{String(i + 1).padStart(2, '0')}
+                        </span>
+                        <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">
+                          Value: {q.points} PTS / {Array.isArray(q.options) && (q.options as string[]).length >= 2 ? "TYPE: SELECT" : "TYPE: OPEN"}
+                        </span>
+                      </div>
+                      <p className="text-sm font-bold uppercase tracking-wide text-foreground leading-relaxed mb-4">
+                        {q.question}
+                      </p>
+                      {q.answer && (
+                        <div className="flex items-start gap-2">
+                           <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground mt-0.5">Reference Answer:</span>
+                           <p className="text-[10px] font-medium uppercase text-muted-foreground italic">{q.answer}</p>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex shrink-0 gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setEditingQuestion(q)}
+                        className="h-9 px-4"
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-9 w-9 p-0 text-destructive border-destructive/20 hover:bg-destructive hover:text-white"
+                        onClick={() => handleDeleteQuestion(q.id)}
+                      >
+                        <Trash2 className="size-4" />
+                      </Button>
+                    </div>
                   </div>
-                  <div className="flex shrink-0 gap-2 sm:flex-row">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setEditingQuestion(q)}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-destructive hover:text-destructive"
-                      onClick={() => handleDeleteQuestion(q.id)}
-                    >
-                      <Trash2 className="size-4" />
-                    </Button>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </CardContent>
-      </Card>
-      )}
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
 
       <EditPaperDialog
         paperId={paperId}
@@ -319,13 +320,12 @@ export function PaperDetailClient({
       <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Delete paper</DialogTitle>
+            <DialogTitle>PURGE DATA UNIT</DialogTitle>
             <DialogDescription>
-              This will permanently delete &quot;{paper.name}&quot; and all its
-              questions. This cannot be undone.
+              Confirm total deletion of &quot;{paper.name}&quot; registry. This action is final.
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter>
+          <DialogFooter className="gap-2">
             <Button
               variant="outline"
               onClick={() => setDeleteConfirmOpen(false)}
@@ -337,7 +337,7 @@ export function PaperDetailClient({
               onClick={handleDeletePaper}
               disabled={deleteLoading}
             >
-              {deleteLoading ? "Deleting…" : "Delete"}
+              {deleteLoading ? "Purging…" : "Confirm Purge"}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -353,26 +353,25 @@ export function PaperDetailClient({
       />
 
       <Dialog open={generateOpen} onOpenChange={setGenerateOpen}>
-        <DialogContent className="rounded-none border-border">
+        <DialogContent className="border-foreground">
           <DialogHeader>
-            <DialogTitle>Generate questions with AI</DialogTitle>
-            <DialogDescription>Topic + how many MCQs and long questions you want.</DialogDescription>
+            <DialogTitle>AI SYNTHESIS MODULE</DialogTitle>
+            <DialogDescription>Enter thematic domain for question generation.</DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4 py-2">
+          <div className="grid gap-6 py-4">
             <div className="space-y-2">
-              <Label htmlFor="generate-topic">Topic</Label>
+              <Label htmlFor="generate-topic">DOMAIN TOPIC</Label>
               <Input
                 id="generate-topic"
-                placeholder="e.g. Photosynthesis, Quadratic equations"
+                placeholder="INPUT TOPIC..."
                 value={generateTopic}
                 onChange={(e) => setGenerateTopic(e.target.value)}
                 disabled={generateLoading}
-                className="rounded-none border-border"
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="generate-mcq">MCQs</Label>
+                <Label htmlFor="generate-mcq">SELECT UNITS (MCQ)</Label>
                 <Input
                   id="generate-mcq"
                   type="number"
@@ -381,11 +380,10 @@ export function PaperDetailClient({
                   value={generateMcqCount}
                   onChange={(e) => setGenerateMcqCount(Number(e.target.value) || 0)}
                   disabled={generateLoading}
-                  className="rounded-none border-border"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="generate-long">Long</Label>
+                <Label htmlFor="generate-long">OPEN UNITS (LONG)</Label>
                 <Input
                   id="generate-long"
                   type="number"
@@ -394,21 +392,19 @@ export function PaperDetailClient({
                   value={generateLongCount}
                   onChange={(e) => setGenerateLongCount(Number(e.target.value) || 0)}
                   disabled={generateLoading}
-                  className="rounded-none border-border"
                 />
               </div>
             </div>
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setGenerateOpen(false)} disabled={generateLoading} className="rounded-none">
-              Cancel
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setGenerateOpen(false)} disabled={generateLoading}>
+              ABORT
             </Button>
             <Button
               onClick={handleGenerateQuestions}
               disabled={generateLoading || generateMcqCount + generateLongCount < 1}
-              className="rounded-none"
             >
-              {generateLoading ? "Generating…" : "Generate"}
+              {generateLoading ? "SYNTHESIZING…" : "START SYNTHESIS"}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -430,3 +426,4 @@ export function PaperDetailClient({
     </div>
   );
 }
+

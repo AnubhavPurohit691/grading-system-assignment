@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 export default function StudentPapersLoading() {
   return (
-    <div className="space-y-6">
+    <div className="container pt-24 pb-12 sm:pt-40 sm:pb-20 animate-slide-up grid-bg min-h-screen">
       <Skeleton className="h-8 w-40" />
       <div className="grid gap-4 sm:grid-cols-2">
         {[1, 2].map((i) => (

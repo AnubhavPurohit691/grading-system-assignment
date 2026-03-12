@@ -2,15 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Award, Check, Loader2, X } from "lucide-react";
+import { ArrowLeft, Award, Check, Loader2, X, Printer, FileCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 type Question = {
   id: string;
@@ -42,7 +36,7 @@ type BackLink = { href: string; label: string };
 
 export function ReportCardClient({
   submissionId,
-  backLink = { href: "/student/papers", label: "Back to papers" },
+  backLink = { href: "/student/papers", label: "Return to Assessment Portal" },
 }: {
   submissionId: string;
   backLink?: BackLink;
@@ -68,26 +62,26 @@ export function ReportCardClient({
 
   if (error) {
     return (
-      <div className="space-y-6">
-        <Button variant="ghost" asChild className="gap-2 -ml-2 text-violet hover:text-violet hover:bg-violet-muted">
-          <Link href={backLink.href}>
-            <ArrowLeft className="size-4" />
-            {backLink.label}
-          </Link>
-        </Button>
-        <Card>
-          <CardContent className="py-8 text-center text-muted-foreground">
-            {error}
-          </CardContent>
-        </Card>
+      <div className="container pt-24 sm:pt-40 grid-bg min-h-screen">
+        <div className="max-w-2xl border-l-4 border-foreground pl-6">
+           <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mb-2">Error / Retrieval Failure</p>
+           <h1 className="text-4xl font-black tracking-tighter text-foreground uppercase italic mb-6">Report Not Found</h1>
+           <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">{error}</p>
+           <Button variant="outline" asChild className="mt-10">
+              <Link href={backLink.href}>{backLink.label}</Link>
+           </Button>
+        </div>
       </div>
     );
   }
 
   if (!submission) {
     return (
-      <div className="flex min-h-[200px] items-center justify-center">
-        <Loader2 className="size-8 animate-spin text-muted-foreground" />
+      <div className="container flex min-h-screen flex-col items-center justify-start pt-24 sm:pt-40 grid-bg">
+        <div className="flex flex-col items-center gap-4">
+           <Loader2 className="size-8 animate-spin text-foreground" />
+           <span className="text-[10px] font-black uppercase tracking-[0.4em]">Generating Evaluation...</span>
+        </div>
       </div>
     );
   }
@@ -104,98 +98,100 @@ export function ReportCardClient({
     totalMax > 0 ? Math.round((totalEarned / totalMax) * 100) : 0;
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
-      <Button variant="ghost" asChild className="gap-2 -ml-2 text-violet hover:text-violet hover:bg-violet-muted opacity-0 animate-fade-in-up">
-        <Link href={backLink.href}>
-          <ArrowLeft className="size-4" />
+    <div className="container pt-24 pb-12 sm:pt-40 sm:pb-20 animate-slide-up grid-bg min-h-screen">
+      <div className="mx-auto max-w-4xl space-y-16">
+        <Link href={backLink.href} className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground transition-colors">
+          <ArrowLeft className="size-3" />
           {backLink.label}
         </Link>
-      </Button>
 
-      <Card className="overflow-hidden print:shadow-none border-l-4 border-l-violet opacity-0 animate-fade-in-up animate-delay-1">
-        <CardHeader className="border-b border-border bg-violet-muted/50 print:bg-transparent">
-          <div className="flex items-center gap-3">
-            <div className="flex size-12 items-center justify-center bg-violet text-white">
-              <Award className="size-6" />
-            </div>
-            <div>
-              <CardTitle className="text-xl text-foreground">Report card</CardTitle>
-              <CardDescription>{submission.questionPaper.name}</CardDescription>
-            </div>
+        {/* Header Unit */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-l-4 border-foreground pl-6">
+          <div className="flex flex-col gap-4">
+            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mb-2">Evaluation Report / Record ID: {submission.id.slice(0,8)}</p>
+            <h1 className="text-5xl font-black tracking-tighter text-foreground uppercase italic leading-none">{submission.questionPaper.name}</h1>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+              Processing Date: {submission.checkedAt ? new Date(submission.checkedAt).toLocaleString().toUpperCase() : "PENDING"}
+            </p>
           </div>
-        </CardHeader>
-        <CardContent className="pt-6">
-          <div className="grid gap-4 sm:grid-cols-3 sm:gap-4">
-            <div className="border border-border bg-teal-muted p-4 text-center border-t-4 border-t-teal">
-              <p className="text-2xl font-bold text-teal">{totalEarned} / {totalMax}</p>
-              <p className="text-xs text-muted-foreground">Score</p>
-            </div>
-            <div className="border border-border bg-violet-muted p-4 text-center border-t-4 border-t-violet">
-              <p className="text-2xl font-bold text-violet">{percentage}%</p>
-              <p className="text-xs text-muted-foreground">Percentage</p>
-            </div>
-            <div className="border border-border bg-amber-muted p-4 text-center border-t-4 border-t-amber">
-              <p className="text-2xl font-bold text-amber">
-                {submission.letterGrade?.replace("_", " ") ?? "—"}
-              </p>
-              <p className="text-xs text-muted-foreground">Grade</p>
-            </div>
+          <Button variant="outline" size="sm" onClick={() => window.print()} className="gap-2 h-10 px-6">
+            <Printer className="size-4" />
+            Export Record
+          </Button>
+        </div>
+
+        {/* Metrics Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-foreground/10 border border-foreground/10">
+          <div className="bg-background p-10 text-center">
+            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground mb-4">Final Score</p>
+            <p className="text-4xl font-black text-foreground">{totalEarned} / {totalMax}</p>
+          </div>
+          <div className="bg-background p-10 text-center">
+            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground mb-4">Precision</p>
+            <p className="text-4xl font-black text-foreground">{percentage}%</p>
+          </div>
+          <div className="bg-background p-10 text-center border-t sm:border-t-0 sm:border-l border-foreground/10">
+            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground mb-4">Grade Tier</p>
+            <p className="text-4xl font-black text-foreground italic">{submission.letterGrade?.replace("_", " ") ?? "—"}</p>
+          </div>
+        </div>
+
+        {/* Question Breakdown */}
+        <div className="space-y-10">
+          <div className="flex items-center gap-4">
+             <div className="h-10 w-1 border-l-4 border-foreground" />
+             <div>
+                <h2 className="text-2xl font-black uppercase tracking-tighter italic text-foreground">Performance Breakdown</h2>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Unit-by-Unit Analysis</p>
+             </div>
           </div>
 
-          <h3 className="mt-8 text-sm font-semibold text-foreground">Question breakdown</h3>
-          <ul className="mt-3 space-y-3">
+          <div className="grid gap-4">
             {submission.studentAnswers
               .slice()
               .sort(
                 (a, b) =>
                   (a.question?.sortOrder ?? 0) - (b.question?.sortOrder ?? 0)
               )
-              .map((sa) => (
-                <li
+              .map((sa, idx) => (
+                <div
                   key={sa.id}
-                  className={`flex items-start gap-3 border p-3 border-l-4 ${sa.isCorrect ? "border-l-teal bg-teal-muted/30" : "border-l-rose bg-rose-muted/20"}`}
+                  className={cn(
+                    "flex flex-col sm:flex-row sm:items-start justify-between gap-6 border p-8 transition-all",
+                    sa.isCorrect ? "border-foreground/10 bg-background" : "border-destructive/20 bg-destructive/[0.02]"
+                  )}
                 >
-                  <span className="mt-0.5 shrink-0">
-                    {sa.isCorrect ? (
-                      <Check className="size-5 text-teal" />
-                    ) : (
-                      <X className="size-5 text-rose" />
-                    )}
-                  </span>
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium line-clamp-2 text-foreground">
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="text-[10px] font-black uppercase tracking-tighter bg-foreground text-background px-2 py-0.5">
+                        Unit {String(idx + 1).padStart(2, '0')}
+                      </span>
+                      <span className={cn(
+                        "text-[9px] font-black uppercase tracking-widest",
+                        sa.isCorrect ? "text-muted-foreground" : "text-destructive"
+                      )}>
+                        Result: {sa.isCorrect ? "PASSED" : "FAILED"} / Earned: {sa.pointsEarned ?? 0} PTS
+                      </span>
+                    </div>
+                    <p className="text-sm font-bold uppercase tracking-wide text-foreground leading-relaxed mb-6">
                       {sa.question?.question}
                     </p>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      Your answer: {sa.answer || "(blank)"}
-                    </p>
-                    <p className="mt-1 text-xs">
-                      <span className="font-medium">
-                        {sa.pointsEarned ?? 0} / {sa.question?.points ?? 0}
-                      </span>{" "}
-                      points
-                    </p>
+                    <div className="space-y-3">
+                       <div className="flex items-start gap-2">
+                          <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground mt-0.5">Input Data:</span>
+                          <p className="text-[10px] font-medium uppercase text-foreground italic">{sa.answer || "NULL_DATA"}</p>
+                       </div>
+                    </div>
                   </div>
-                </li>
+                  <div className="shrink-0 flex items-center justify-center h-10 w-10 border border-foreground/10">
+                     {sa.isCorrect ? <Check className="size-5" /> : <X className="size-5 text-destructive" />}
+                  </div>
+                </div>
               ))}
-          </ul>
-
-          {submission.checkedAt && (
-            <p className="mt-6 text-right text-xs text-muted-foreground">
-              Graded on {new Date(submission.checkedAt).toLocaleString()}
-            </p>
-          )}
-        </CardContent>
-      </Card>
-
-      <div className="flex gap-3 print:hidden">
-        <Button asChild className="bg-violet hover:bg-violet/90 text-white border-0">
-          <Link href={backLink.href}>{backLink.label}</Link>
-        </Button>
-        <Button variant="outline" onClick={() => window.print()} className="border-teal text-teal hover:bg-teal-muted">
-          Print report
-        </Button>
+          </div>
+        </div>
       </div>
     </div>
   );
 }
+

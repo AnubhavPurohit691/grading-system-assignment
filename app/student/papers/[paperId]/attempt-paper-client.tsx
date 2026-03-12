@@ -5,16 +5,10 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Loader2, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 type Question = {
   id: string;
@@ -104,114 +98,131 @@ export function AttemptPaperClient({ paperId }: { paperId: string }) {
 
   if (error) {
     return (
-      <div className="space-y-6">
-        <Button variant="ghost" asChild className="gap-2 -ml-2 text-violet hover:text-violet hover:bg-violet-muted">
-          <Link href="/student/papers">
-            <ArrowLeft className="size-4" />
-            Back to papers
-          </Link>
-        </Button>
-        <Card className="border-l-4 border-l-rose">
-          <CardContent className="py-8 text-center text-muted-foreground">
-            {error}
-          </CardContent>
-        </Card>
+      <div className="container pt-24 sm:pt-40 grid-bg min-h-screen">
+        <div className="max-w-2xl border-l-4 border-foreground pl-6">
+           <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mb-2">Error / Request Failure</p>
+           <h1 className="text-4xl font-black tracking-tighter text-foreground uppercase italic mb-6">Unit Load Error</h1>
+           <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">{error}</p>
+           <Button variant="outline" asChild className="mt-10">
+              <Link href="/student/papers">Return to Index</Link>
+           </Button>
+        </div>
       </div>
     );
   }
 
   if (!paper) {
     return (
-      <div className="flex min-h-[200px] items-center justify-center">
-        <Loader2 className="size-8 animate-spin text-violet" />
+      <div className="container flex min-h-screen flex-col items-center justify-start pt-24 sm:pt-40 grid-bg">
+        <div className="flex flex-col items-center gap-4">
+           <Loader2 className="size-8 animate-spin text-foreground" />
+           <span className="text-[10px] font-black uppercase tracking-[0.4em]">Initializing Unit...</span>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
-      <Button variant="ghost" asChild className="gap-2 -ml-2 text-violet hover:text-violet hover:bg-violet-muted opacity-0 animate-fade-in-up">
-        <Link href="/student/papers">
-          <ArrowLeft className="size-4" />
-          Back to papers
+    <div className="container pt-24 pb-12 sm:pt-40 sm:pb-20 animate-slide-up grid-bg min-h-screen">
+      <div className="mx-auto max-w-3xl space-y-16">
+        <Link href="/student/papers" className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground transition-colors">
+          <ArrowLeft className="size-3" />
+          Abort Session / Return
         </Link>
-      </Button>
 
-      <Card className="border-l-4 border-l-indigo opacity-0 animate-fade-in-up animate-delay-1">
-        <CardHeader>
-          <CardTitle className="text-foreground">{paper.name}</CardTitle>
+        <div className="border-l-4 border-foreground pl-6">
+          <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mb-2">Active Assessment / Session ID: {paper.id.slice(0,8)}</p>
+          <h1 className="text-4xl font-black tracking-tighter text-foreground uppercase italic mb-2">{paper.name}</h1>
           {paper.description && (
-            <CardDescription>{paper.description}</CardDescription>
+            <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground leading-relaxed max-w-xl">{paper.description}</p>
           )}
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-8">
-            {paper.questions.map((q, idx) => {
-              const options = Array.isArray(q.options)
-                ? (q.options as string[]).filter((o) => typeof o === "string")
-                : null;
-              const isMcq = options && options.length >= 2;
-              return (
-                <div key={q.id} className="space-y-2 border-b border-border pb-6 last:border-0 last:pb-0">
-                  <Label className="text-base text-foreground">
-                    Question {idx + 1} <span className="text-teal font-normal">({q.points} pt{q.points !== 1 ? "s" : ""})</span>
-                    {isMcq && <span className="ml-1 text-xs text-muted-foreground">(MCQ)</span>}
-                  </Label>
-                  <p className="text-sm text-muted-foreground whitespace-pre-wrap">{q.question}</p>
-                  {isMcq ? (
-                    <div className="mt-2 space-y-2">
-                      {options!.map((opt, i) => (
-                        <label
-                          key={i}
-                          className={`flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm transition-colors ${
-                            answers[q.id] === opt
-                              ? "border-violet bg-violet/10"
-                              : "border-border hover:border-violet/50"
-                          }`}
-                        >
-                          <input
-                            type="radio"
-                            name={q.id}
-                            value={opt}
-                            checked={answers[q.id] === opt}
-                            onChange={() => handleAnswerChange(q.id, opt)}
-                            disabled={submitting}
-                            className="size-4 border-violet text-violet focus:ring-violet"
-                          />
-                          <span className="text-foreground">{opt}</span>
-                        </label>
-                      ))}
-                    </div>
-                  ) : (
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-12 pb-20">
+          {paper.questions.map((q, idx) => {
+            const options = Array.isArray(q.options)
+              ? (q.options as string[]).filter((o) => typeof o === "string")
+              : null;
+            const isMcq = options && options.length >= 2;
+            return (
+              <div key={q.id} className="group border border-foreground/10 bg-background p-8 hover:border-foreground/30 transition-all">
+                <div className="flex items-center justify-between gap-4 mb-6">
+                  <span className="text-[10px] font-black uppercase tracking-tighter bg-foreground text-background px-2 py-0.5">
+                    Unit {String(idx + 1).padStart(2, '0')}
+                  </span>
+                  <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">
+                    Value: {q.points} PTS / {isMcq ? "TYPE: SELECT" : "TYPE: OPEN"}
+                  </span>
+                </div>
+                
+                <p className="text-sm font-bold uppercase tracking-wide text-foreground leading-relaxed mb-8">{q.question}</p>
+                
+                {isMcq ? (
+                  <div className="grid grid-cols-1 gap-3">
+                    {options!.map((opt, i) => (
+                      <label
+                        key={i}
+                        className={cn(
+                          "flex cursor-pointer items-center gap-4 border p-4 text-[11px] font-bold uppercase tracking-widest transition-all",
+                          answers[q.id] === opt
+                            ? "border-foreground bg-foreground text-background"
+                            : "border-foreground/10 hover:border-foreground/30 text-foreground"
+                        )}
+                      >
+                        <input
+                          type="radio"
+                          name={q.id}
+                          value={opt}
+                          checked={answers[q.id] === opt}
+                          onChange={() => handleAnswerChange(q.id, opt)}
+                          disabled={submitting}
+                          className="hidden"
+                        />
+                        <span className={cn(
+                          "flex h-4 w-4 shrink-0 items-center justify-center border",
+                          answers[q.id] === opt ? "border-background" : "border-foreground/20"
+                        )}>
+                           {answers[q.id] === opt && <div className="h-2 w-2 bg-background" />}
+                        </span>
+                        {opt}
+                      </label>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <Label htmlFor={`q-${q.id}`}>Input Answer</Label>
                     <Input
-                      placeholder="Your answer"
+                      id={`q-${q.id}`}
+                      placeholder="ENTER TEXT..."
                       value={answers[q.id] ?? ""}
                       onChange={(e) => handleAnswerChange(q.id, e.target.value)}
                       disabled={submitting}
-                      className="mt-2 border-violet/30 focus-visible:ring-violet"
+                      className="h-14"
                     />
-                  )}
-                </div>
-              );
-            })}
-            <div className="flex flex-col gap-3 pt-4 sm:flex-row sm:justify-end">
-              <Button type="submit" disabled={submitting} className="gap-2 bg-violet hover:bg-violet/90 text-white border-0">
-                {submitting ? (
-                  <>
-                    <Loader2 className="size-4 animate-spin" />
-                    Submitting…
-                  </>
-                ) : (
-                  <>
-                    <Send className="size-4" />
-                    Submit for grading
-                  </>
+                  </div>
                 )}
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+              </div>
+            );
+          })}
+          
+          <div className="flex justify-end pt-8 border-t border-foreground/10">
+            <Button type="submit" disabled={submitting} size="lg" className="h-16 px-12 gap-4">
+              {submitting ? (
+                <>
+                  <Loader2 className="size-5 animate-spin" />
+                  Processing Submission…
+                </>
+              ) : (
+                <>
+                  <Send className="size-5" />
+                  Terminate / Submit for Evaluation
+                </>
+              )}
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
+

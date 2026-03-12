@@ -11,6 +11,8 @@ import {
   ClipboardList,
   GraduationCap,
   Send,
+  ChevronRight,
+  ShieldCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -20,105 +22,104 @@ type Props = {
 
 export function LandingHero({ user }: Props) {
   return (
-    <div className="flex flex-col bg-background">
-      <section className="flex flex-col items-center justify-center px-4 pt-24 pb-16 sm:pt-36 sm:pb-24">
-        <div className="mx-auto flex w-full max-w-4xl flex-col items-center gap-8 text-center">
-          <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl leading-[1.1]">
-            Grade smarter,<br className="hidden sm:block" /> not harder
+    <div className="flex flex-col bg-background grid-bg min-h-screen">
+      <section className="flex flex-col items-center justify-center px-4 pt-24 pb-16 sm:pt-40 sm:pb-32 relative overflow-hidden">
+        {/* Decorative elements */}
+        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-border to-transparent opacity-50" />
+        
+        <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-12 text-center animate-slide-up">
+          <div className="inline-flex items-center gap-2 px-3 py-1 border border-border bg-background/50 backdrop-blur-sm">
+            <span className="size-1.5 rounded-full bg-foreground animate-pulse" />
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em]">System Status: Operational</span>
+          </div>
+          
+          <h1 className="text-5xl font-black tracking-tighter text-foreground sm:text-7xl lg:text-8xl leading-[0.9] uppercase italic">
+            Autonomous<br className="hidden sm:block" /> Evaluation
           </h1>
-          <p className="mx-auto max-w-xl text-base text-muted-foreground sm:text-lg">
-            Create question papers, invite students, and let AI handle the grading. Get detailed report cards in seconds.
+          
+          <p className="mx-auto max-w-2xl text-sm font-medium text-muted-foreground uppercase tracking-wider leading-relaxed">
+            Standardizing educational assessment through deterministic AI grading. Eliminate human bias. Maximize efficiency.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center gap-3 mt-2">
+          <div className="flex flex-col sm:flex-row items-center gap-4 mt-4">
             {!user ? (
               <>
-                <Button asChild size="lg" className="w-full sm:w-auto px-8">
+                <Button asChild size="lg" className="w-full sm:w-auto px-10 h-14 bg-foreground text-background hover:bg-muted-foreground text-xs font-bold uppercase tracking-[0.2em] transition-all active:scale-95">
                   <Link href="/auth/signup">
-                    Get started
-                    <ArrowRight className="ml-2 size-4" />
+                    Initialize Protocol
+                    <ArrowRight className="ml-3 size-4" />
                   </Link>
                 </Button>
-                <Button variant="outline" size="lg" asChild className="w-full sm:w-auto px-8">
-                  <Link href="/auth/login">Log in</Link>
+                <Button variant="outline" size="lg" asChild className="w-full sm:w-auto px-10 h-14 border-foreground hover:bg-foreground hover:text-background text-xs font-bold uppercase tracking-[0.2em] transition-all">
+                  <Link href="/auth/login">Access Archive</Link>
                 </Button>
               </>
             ) : (
-              <Button asChild size="lg" className="px-8">
+              <Button asChild size="lg" className="px-10 h-14 bg-foreground text-background hover:bg-muted-foreground text-xs font-bold uppercase tracking-[0.2em] transition-all">
                 <Link href="/dashboard">
-                  Go to dashboard
-                  <ArrowRight className="ml-2 size-4" />
+                  Enter Control Center
+                  <ArrowRight className="ml-3 size-4" />
                 </Link>
               </Button>
             )}
           </div>
 
-          <div className="relative mt-14 w-full max-w-3xl">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-primary/5 rounded-2xl blur-2xl" />
-            <div className="relative rounded-2xl border border-border/80 bg-card/80 backdrop-blur-sm p-6 sm:p-8 shadow-lg">
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10">
-                <div className="flex items-center gap-3 rounded-xl bg-muted/60 px-4 py-3 border border-border/60">
-                  <div className="flex size-10 items-center justify-center rounded-lg bg-primary/15 text-primary">
-                    <FileText className="size-5" />
+          <div className="relative mt-20 w-full max-w-4xl border border-foreground/20 p-2 group overflow-hidden">
+            <div className="absolute inset-0 bg-foreground/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="relative border border-foreground/10 bg-background p-4 sm:p-10 text-left">
+               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-0">
+                  <div className="flex flex-col gap-4 md:px-8">
+                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Module 01</span>
+                    <h3 className="text-lg font-black uppercase tracking-tighter italic">Synthesis</h3>
+                    <p className="text-xs text-muted-foreground font-medium uppercase leading-relaxed">Generate structured question papers from raw thematic data inputs.</p>
                   </div>
-                  <div className="text-left">
-                    <p className="text-sm font-medium text-foreground">Papers</p>
-                    <p className="text-xs text-muted-foreground">Create & share</p>
+                  <div className="flex flex-col gap-4 md:px-8 border-y md:border-y-0 md:border-x border-border py-8 md:py-0">
+                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Module 02</span>
+                    <h3 className="text-lg font-black uppercase tracking-tighter italic">Distribution</h3>
+                    <p className="text-xs text-muted-foreground font-medium uppercase leading-relaxed">Secure encrypted invite links for student participant enrollment.</p>
                   </div>
-                </div>
-                <div className="hidden sm:block h-px sm:h-8 sm:w-px bg-border/80 flex-shrink-0" />
-                <div className="flex items-center gap-3 rounded-xl bg-muted/60 px-4 py-3 border border-border/60">
-                  <div className="flex size-10 items-center justify-center rounded-lg bg-primary/15 text-primary">
-                    <UserCheck className="size-5" />
+                  <div className="flex flex-col gap-4 md:px-8">
+                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Module 03</span>
+                    <h3 className="text-lg font-black uppercase tracking-tighter italic">Evaluation</h3>
+                    <p className="text-xs text-muted-foreground font-medium uppercase leading-relaxed">Neural processing of submissions with comprehensive reporting.</p>
                   </div>
-                  <div className="text-left">
-                    <p className="text-sm font-medium text-foreground">Students</p>
-                    <p className="text-xs text-muted-foreground">Invite & attempt</p>
-                  </div>
-                </div>
-                <div className="hidden sm:block h-px sm:h-8 sm:w-px bg-border/80 flex-shrink-0" />
-                <div className="flex items-center gap-3 rounded-xl bg-muted/60 px-4 py-3 border border-border/60">
-                  <div className="flex size-10 items-center justify-center rounded-lg bg-primary/15 text-primary">
-                    <Sparkles className="size-5" />
-                  </div>
-                  <div className="text-left">
-                    <p className="text-sm font-medium text-foreground">AI grades</p>
-                    <p className="text-xs text-muted-foreground">Scores & reports</p>
-                  </div>
-                </div>
-              </div>
+               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="py-16 sm:py-20 border-t border-border">
+      <section className="py-24 border-y border-border bg-foreground/[0.02]">
         <div className="container">
-          <div className="mx-auto max-w-2xl text-center mb-10">
-            <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-              Everything you need
-            </h2>
-            <p className="mt-3 text-muted-foreground">
-              From creating papers to viewing report cards.
+          <div className="flex flex-col md:flex-row items-end justify-between gap-8 mb-20">
+            <div className="max-w-xl">
+              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.3em] mb-4 block">Core Capabilities</span>
+              <h2 className="text-4xl font-black tracking-tighter text-foreground uppercase italic leading-none">
+                Technical Specifications
+              </h2>
+            </div>
+            <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest max-w-xs text-right">
+              Built for high-throughput educational environments and rigorous academic standards.
             </p>
           </div>
-          <div className="mx-auto grid max-w-4xl grid-cols-1 gap-4 sm:grid-cols-2">
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-border border border-border">
             {[
-              { icon: Zap, title: "AI-generated questions", desc: "Enter a topic, get MCQs and long-answer questions in seconds." },
-              { icon: FileText, title: "MCQ & long form", desc: "Mix question types, set points, and mark correct answers." },
-              { icon: Link2, title: "Invite links", desc: "Share a link or email invite so students join your class." },
-              { icon: ClipboardList, title: "Report cards", desc: "Scores, letter grades, and per-question feedback for every submission." },
+              { icon: Zap, title: "Algorithmic Generation", desc: "AI-driven question synthesis across multiple domains." },
+              { icon: ShieldCheck, title: "Verified Response", desc: "Rigorous MCQ and long-form answer validation." },
+              { icon: Link2, title: "Encoded Access", desc: "Secure token-based invitation and enrollment system." },
+              { icon: ClipboardList, title: "Diagnostic Data", desc: "Deep analytical feedback and performance metrics." },
             ].map((item) => (
               <div
                 key={item.title}
-                className="flex gap-4 rounded-xl border border-border bg-card p-5"
+                className="flex flex-col gap-6 bg-background p-8 hover:bg-muted/50 transition-colors group"
               >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted">
-                  <item.icon className="size-5 text-foreground" />
+                <div className="flex h-10 w-10 items-center justify-center border border-foreground group-hover:bg-foreground group-hover:text-background transition-colors">
+                  <item.icon className="size-5" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-foreground">{item.title}</h3>
-                  <p className="mt-1 text-sm text-muted-foreground">{item.desc}</p>
+                  <h3 className="font-black text-sm uppercase tracking-tight italic mb-2">{item.title}</h3>
+                  <p className="text-[11px] font-medium text-muted-foreground uppercase leading-relaxed">{item.desc}</p>
                 </div>
               </div>
             ))}
@@ -126,157 +127,32 @@ export function LandingHero({ user }: Props) {
         </div>
       </section>
 
-      <section className="py-20 sm:py-28 border-t border-border">
-        <div className="container">
-          <div className="mx-auto max-w-2xl text-center mb-14">
-            <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-              How it works
+      <section className="py-32 border-b border-border relative overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border border-border rounded-full opacity-10 pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-border rounded-full opacity-10 pointer-events-none" />
+        
+        <div className="container relative z-10">
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.4em] mb-6 block">Ready to deploy?</span>
+            <h2 className="text-5xl font-black tracking-tighter text-foreground sm:text-7xl uppercase italic mb-10 leading-[0.9]">
+              Begin Assessment<br />Cycle Now
             </h2>
-            <p className="mt-3 text-muted-foreground">
-              Three steps from paper creation to graded results.
-            </p>
-          </div>
-
-          <div className="mx-auto grid max-w-5xl grid-cols-1 gap-px bg-border md:grid-cols-3">
-            <div className="bg-background p-8">
-              <span className="text-sm font-mono text-muted-foreground">01</span>
-              <h3 className="mt-3 text-lg font-semibold text-foreground">Create papers</h3>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Build question papers with point values and expected answers. Share them with your students via invite links.
-              </p>
-            </div>
-
-            <div className="bg-background p-8">
-              <span className="text-sm font-mono text-muted-foreground">02</span>
-              <h3 className="mt-3 text-lg font-semibold text-foreground">Students submit</h3>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Students access their assigned papers and submit answers directly through the platform.
-              </p>
-            </div>
-
-            <div className="bg-background p-8">
-              <span className="text-sm font-mono text-muted-foreground">03</span>
-              <h3 className="mt-3 text-lg font-semibold text-foreground">AI grades</h3>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Submissions are evaluated automatically. You get scores, letter grades, and per-question feedback.
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-16 flex justify-center">
-            {!user ? (
-              <Button asChild size="lg" className="px-8">
-                <Link href="/auth/signup">
-                  Get started
-                  <ArrowRight className="ml-2 size-4" />
-                </Link>
-              </Button>
-            ) : (
-              <Button asChild size="lg" className="px-8">
-                <Link href="/dashboard">
-                  Go to dashboard
-                  <ArrowRight className="ml-2 size-4" />
-                </Link>
-              </Button>
-            )}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-16 sm:py-20 border-t border-border bg-muted/30">
-        <div className="container">
-          <div className="mx-auto max-w-2xl text-center mb-10">
-            <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-              For teachers and students
-            </h2>
-            <p className="mt-3 text-muted-foreground">
-              One platform for creating assessments and taking them.
-            </p>
-          </div>
-          <div className="mx-auto grid max-w-4xl grid-cols-1 gap-6 md:grid-cols-2">
-            <div className="rounded-xl border border-border bg-card p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                  <GraduationCap className="size-5 text-foreground" />
-                </div>
-                <h3 className="text-lg font-semibold text-foreground">Teachers</h3>
-              </div>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li className="flex items-center gap-2">
-                  <span className="size-1.5 rounded-full bg-foreground/40" />
-                  Create and manage question papers
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="size-1.5 rounded-full bg-foreground/40" />
-                  Generate questions from any topic with AI
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="size-1.5 rounded-full bg-foreground/40" />
-                  Invite students via link or email
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="size-1.5 rounded-full bg-foreground/40" />
-                  View all student report cards in one place
-                </li>
-              </ul>
-            </div>
-            <div className="rounded-xl border border-border bg-card p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                  <Send className="size-5 text-foreground" />
-                </div>
-                <h3 className="text-lg font-semibold text-foreground">Students</h3>
-              </div>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li className="flex items-center gap-2">
-                  <span className="size-1.5 rounded-full bg-foreground/40" />
-                  See papers assigned by your teacher
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="size-1.5 rounded-full bg-foreground/40" />
-                  Answer MCQs and long questions online
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="size-1.5 rounded-full bg-foreground/40" />
-                  Submit in one go and get graded by AI
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="size-1.5 rounded-full bg-foreground/40" />
-                  View your report card with score and feedback
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-16 sm:py-20 border-t border-border">
-        <div className="container">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-              Ready to save time?
-            </h2>
-            <p className="mt-3 text-muted-foreground">
-              Create your first paper or sign in to get started.
-            </p>
-            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
               {!user ? (
                 <>
-                  <Button asChild size="lg" className="w-full sm:w-auto px-8">
+                  <Button asChild size="lg" className="w-full sm:w-auto px-12 h-16 bg-foreground text-background hover:bg-muted-foreground text-xs font-bold uppercase tracking-[0.2em] transition-all">
                     <Link href="/auth/signup">
-                      Get started free
-                      <ArrowRight className="ml-2 size-4" />
+                      Initialize Account
                     </Link>
                   </Button>
-                  <Button variant="outline" size="lg" asChild className="w-full sm:w-auto px-8">
-                    <Link href="/auth/login">Log in</Link>
+                  <Button variant="outline" size="lg" asChild className="w-full sm:w-auto px-12 h-16 border-foreground hover:bg-foreground hover:text-background text-xs font-bold uppercase tracking-[0.2em] transition-all">
+                    <Link href="/auth/login">User Login</Link>
                   </Button>
                 </>
               ) : (
-                <Button asChild size="lg" className="px-8">
+                <Button asChild size="lg" className="px-12 h-16 bg-foreground text-background hover:bg-muted-foreground text-xs font-bold uppercase tracking-[0.2em] transition-all">
                   <Link href="/dashboard">
                     Go to dashboard
-                    <ArrowRight className="ml-2 size-4" />
                   </Link>
                 </Button>
               )}
@@ -284,6 +160,19 @@ export function LandingHero({ user }: Props) {
           </div>
         </div>
       </section>
+
+      <footer className="py-12 border-t border-border bg-background">
+        <div className="container flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-2">
+            <div className="flex h-6 w-6 items-center justify-center bg-foreground text-background text-[10px] font-black">G</div>
+            <span className="text-[10px] font-black uppercase tracking-[0.2em]">Grading.AI / Evaluation Unit</span>
+          </div>
+          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+            © 2026 Autonomous Educational Systems. All rights reserved.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }
+

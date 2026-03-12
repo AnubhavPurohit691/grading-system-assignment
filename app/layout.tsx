@@ -4,6 +4,7 @@ import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AppNavWrapper } from "@/components/app-nav-wrapper";
 import { AppFooter } from "@/components/app-footer";
+import { MainContentSpacer } from "@/components/main-content-spacer";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -38,7 +39,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} min-h-screen antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} min-h-screen antialiased bg-background text-foreground`}
       >
         <ThemeProvider
           attribute="class"
@@ -47,9 +48,10 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AppNavWrapper />
-          <main className="container py-6 sm:py-8 lg:py-10">{children}</main>
-          <AppFooter />
-          <Toaster richColors position="top-center" />
+          <main className="relative flex min-h-screen flex-col">
+            <MainContentSpacer>{children}</MainContentSpacer>
+          </main>
+          <Toaster richColors position="top-center" theme="light" />
         </ThemeProvider>
       </body>
     </html>
