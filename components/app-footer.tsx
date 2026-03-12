@@ -8,6 +8,8 @@ export function AppFooter() {
   return (
     <footer className="border-t border-border/60 bg-muted/30">
       <div className="container flex flex-col items-center justify-center gap-2 py-6 text-sm text-muted-foreground sm:flex-row sm:gap-4">
+        <span className="font-medium text-foreground">Grading.AI</span>
+        <span className="hidden sm:inline" aria-hidden>·</span>
         <span>Built by AnubhavPurohit</span>
         <span className="hidden sm:inline" aria-hidden>
           ·

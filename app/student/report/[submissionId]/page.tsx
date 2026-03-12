@@ -7,8 +7,8 @@ type Props = { params: Promise<{ submissionId: string }> };
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: "Report card — Grading",
-    description: "Your grading report",
+title: "Report card",
+  description: "Your grading report",
   };
 }
 

@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { useActionState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -11,6 +10,7 @@ import {
   Plus,
   Sparkles,
   Trash2,
+  Users,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -54,13 +54,22 @@ const EditQuestionDialog = dynamic(
     })),
   { ssr: false }
 );
+
+const EditPaperDialog = dynamic(
+  () =>
+    import("@/components/edit-paper-dialog").then((m) => ({
+      default: m.EditPaperDialog,
+    })),
+  { ssr: false }
+);
+
 import type { PaperDetailDTO } from "@/lib/types/papers";
 import {
-  updatePaperAction,
   deletePaperAction,
   deleteQuestionAction,
 } from "@/lib/actions/papers";
-import { PaperSubmissionsList } from "@/components/paper-submissions-list";
+import { PaperStudentSection } from "@/components/paper-student-section";
+import { cn } from "@/lib/utils";
 
 export function PaperDetailClient({
   paperId,
@@ -81,6 +90,7 @@ export function PaperDetailClient({
   const [generateLongCount, setGenerateLongCount] = useState(2);
   const [generateLoading, setGenerateLoading] = useState(false);
   const [editingQuestion, setEditingQuestion] = useState<PaperDetailDTO["questions"][number] | null>(null);
+  const [activeTab, setActiveTab] = useState<"questions" | "students">("questions");
 
   async function handleDeletePaper() {
     setDeleteLoading(true);
@@ -146,7 +156,7 @@ export function PaperDetailClient({
   const questions = paper.questions ?? [];
 
   return (
-    <div className="space-y-6 sm:space-y-8 relative">
+    <div className="space-y-6 sm:space-y-8">
       <div className="flex flex-wrap items-start gap-3 sm:items-center sm:gap-4">
         <Button variant="ghost" size="icon" className="shrink-0" asChild>
           <Link href="/question-papers">
@@ -183,10 +193,42 @@ export function PaperDetailClient({
         </DropdownMenu>
       </div>
 
-      <Card className="rounded-none border border-border shadow-sm group">
+      <div className="flex gap-1 rounded-lg bg-muted/60 p-1">
+        <button
+          type="button"
+          onClick={() => setActiveTab("questions")}
+          className={cn(
+            "flex flex-1 items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-medium transition-colors sm:flex-initial",
+            activeTab === "questions"
+              ? "bg-background text-foreground shadow-sm"
+              : "text-muted-foreground hover:text-foreground"
+          )}
+        >
+          <ListOrdered className="size-4 shrink-0" />
+          Questions
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab("students")}
+          className={cn(
+            "flex flex-1 items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-medium transition-colors sm:flex-initial",
+            activeTab === "students"
+              ? "bg-background text-foreground shadow-sm"
+              : "text-muted-foreground hover:text-foreground"
+          )}
+        >
+          <Users className="size-4 shrink-0" />
+          Student reports
+        </button>
+      </div>
+
+      {activeTab === "students" && <PaperStudentSection paperId={paperId} />}
+
+      {activeTab === "questions" && (
+      <Card className="border border-border shadow-sm">
         <CardHeader className="flex flex-col gap-4 pb-2 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
           <div className="min-w-0 flex-1">
-            <CardTitle className="flex items-center gap-2 text-foreground group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
+            <CardTitle className="flex items-center gap-2 text-foreground">
               <ListOrdered className="size-5 shrink-0" />
               Questions
             </CardTitle>
@@ -264,8 +306,7 @@ export function PaperDetailClient({
           )}
         </CardContent>
       </Card>
-
-      <PaperSubmissionsList paperId={paperId} />
+      )}
 
       <EditPaperDialog
         paperId={paperId}
@@ -387,99 +428,5 @@ export function PaperDetailClient({
         />
       )}
     </div>
-  );
-}
-
-function EditPaperDialog({
-  paperId,
-  open,
-  onOpenChange,
-  initialName,
-  initialDesc,
-}: {
-  paperId: string;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  initialName: string;
-  initialDesc: string;
-}) {
-  const router = useRouter();
-  const [name, setName] = useState(initialName);
-  const [description, setDescription] = useState(initialDesc);
-  const submittedRef = useRef(false);
-  const [state, formAction, isPending] = useActionState(
-    updatePaperAction.bind(null, paperId),
-    {}
-  );
-
-  useEffect(() => {
-    setName(initialName);
-    setDescription(initialDesc);
-  }, [initialName, initialDesc]);
-
-  useEffect(() => {
-    if (!isPending && submittedRef.current) {
-      submittedRef.current = false;
-      if (state?.error) {
-        toast.error(state.error);
-      } else {
-        toast.success("Paper updated");
-        onOpenChange(false);
-        router.refresh();
-      }
-    }
-  }, [isPending, state, onOpenChange, router]);
-
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Edit paper</DialogTitle>
-          <DialogDescription>
-            Change name and description.
-          </DialogDescription>
-        </DialogHeader>
-        <form
-          action={formAction}
-          onSubmit={() => {
-            submittedRef.current = true;
-          }}
-        >
-          <div className="grid gap-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="edit-name">Name</Label>
-              <Input
-                id="edit-name"
-                name="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="edit-desc">Description (optional)</Label>
-              <Input
-                id="edit-desc"
-                name="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isPending}>
-              {isPending ? "Saving…" : "Save"}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
   );
 }

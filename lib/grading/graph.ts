@@ -2,30 +2,7 @@ import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { HumanMessage } from "@langchain/core/messages";
 import { StateGraph, Annotation } from "@langchain/langgraph";
 import type { GradingItem, GradingResultItem } from "./types";
-
-const LETTER_GRADES = [
-  "A_PLUS",
-  "A",
-  "B_PLUS",
-  "B",
-  "C_PLUS",
-  "C",
-  "D_PLUS",
-  "D",
-  "F",
-] as const;
-
-function percentageToLetterGrade(percentage: number): (typeof LETTER_GRADES)[number] {
-  if (percentage >= 90) return "A_PLUS";
-  if (percentage >= 80) return "A";
-  if (percentage >= 70) return "B_PLUS";
-  if (percentage >= 60) return "B";
-  if (percentage >= 50) return "C_PLUS";
-  if (percentage >= 40) return "C";
-  if (percentage >= 30) return "D_PLUS";
-  if (percentage >= 20) return "D";
-  return "F";
-}
+import { percentageToLetterGrade } from "./letter-grade";
 
 const GradingState = Annotation.Root({
   submissionId: Annotation<string>(),

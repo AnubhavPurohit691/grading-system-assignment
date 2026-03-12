@@ -19,9 +19,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: { default: "Grading — Question Papers", template: "%s" },
+  title: { default: "Grading.AI", template: "%s — Grading.AI" },
   description: "Create and manage question papers. AI grading and report cards.",
-  openGraph: { title: "Grading — Question Papers", description: "Create and manage question papers. AI grading and report cards." },
+  openGraph: { title: "Grading.AI", description: "Create and manage question papers. AI grading and report cards." },
 };
 
 export const viewport: Viewport = {

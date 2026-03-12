@@ -1,8 +1,8 @@
 import { LoginForm } from "@/components/login-form";
 
 export const metadata = {
-  title: "Log in — Grading",
-  description: "Sign in to your Grading account.",
+  title: "Log in",
+  description: "Sign in to your Grading.AI account.",
 };
 
 export default function LoginPage() {

@@ -3,13 +3,14 @@ import type { Prisma } from "@/generated/prisma/client";
 import { getAuthFromRequest } from "@/proxy";
 import { getTeacherContextFromRequest } from "@/proxy";
 import { NextResponse } from "next/server";
+import { AUTH_MESSAGE_NOT_AUTHENTICATED } from "@/lib/constants";
 
 type RouteContext = { params: Promise<{ submissionId: string }> };
 
 export async function GET(request: Request, context: RouteContext) {
   const auth = getAuthFromRequest(request);
   if (!auth) {
-    return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
+    return NextResponse.json({ message: AUTH_MESSAGE_NOT_AUTHENTICATED }, { status: 401 });
   }
 
   const { submissionId } = await context.params;

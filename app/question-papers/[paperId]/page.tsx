@@ -22,9 +22,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const teacherId = await getTeacherIdFromCookies();
   const paper = await getPaper(paperId, teacherId);
   if (!paper)
-    return { title: "Question paper — Grading" };
+    return { title: "Question paper" };
   return {
-    title: `${paper.name} — Grading`,
+    title: paper.name,
     description: paper.description ?? `Question paper: ${paper.name}`,
   };
 }

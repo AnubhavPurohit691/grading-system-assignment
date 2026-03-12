@@ -4,7 +4,7 @@ import { getStudentIdFromCookies } from "@/lib/auth-server";
 import { StudentPapersClient } from "./student-papers-client";
 
 export const metadata: Metadata = {
-  title: "My papers — Grading",
+  title: "My papers",
   description: "Question papers from your teacher",
 };
 

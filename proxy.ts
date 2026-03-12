@@ -1,6 +1,12 @@
+/**
+ * Auth for API routes: reads JWT from cookie, sets x-user-id / x-role / x-teacher-id / x-student-id
+ * on the request. Use getAuthFromRequest(request) or getTeacherContextFromRequest / getStudentContextFromRequest
+ * in routes matched by config.matcher.
+ */
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import jwt from "jsonwebtoken";
+import { AUTH_COOKIE_NAME, AUTH_MESSAGE_NOT_AUTHENTICATED } from "@/lib/constants";
 
 export const AUTH_HEADERS = {
     userId: "x-user-id",
@@ -17,9 +23,9 @@ export type AuthContext = {
 };
 
 export function proxy(request: NextRequest) {
-    const token = request.cookies.get("gradingtoken")?.value;
+    const token = request.cookies.get(AUTH_COOKIE_NAME)?.value;
     if (!token) {
-        return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
+        return NextResponse.json({ message: AUTH_MESSAGE_NOT_AUTHENTICATED }, { status: 401 });
     }
 
     const secret = process.env.JWT_SECRET;
@@ -45,7 +51,7 @@ export function proxy(request: NextRequest) {
             request: { headers: requestHeaders },
         });
     } catch {
-        return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
+        return NextResponse.json({ message: AUTH_MESSAGE_NOT_AUTHENTICATED }, { status: 401 });
     }
 }
 
@@ -77,7 +83,7 @@ export function getTeacherContextFromRequest(request: Request):
     if (!ctx) {
         return {
             ok: false,
-            response: new Response(JSON.stringify({ message: "Not authenticated" }), {
+            response: new Response(JSON.stringify({ message: AUTH_MESSAGE_NOT_AUTHENTICATED }), {
                 status: 401,
                 headers: { "Content-Type": "application/json" },
             }),
@@ -102,7 +108,7 @@ export function getStudentContextFromRequest(request: Request):
     if (!ctx) {
         return {
             ok: false,
-            response: new Response(JSON.stringify({ message: "Not authenticated" }), {
+            response: new Response(JSON.stringify({ message: AUTH_MESSAGE_NOT_AUTHENTICATED }), {
                 status: 401,
                 headers: { "Content-Type": "application/json" },
             }),

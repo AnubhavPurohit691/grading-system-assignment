@@ -1,7 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, FileText, UserCheck, Sparkles } from "lucide-react";
+import {
+  ArrowRight,
+  FileText,
+  UserCheck,
+  Sparkles,
+  Zap,
+  Link2,
+  ClipboardList,
+  GraduationCap,
+  Send,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type Props = {
@@ -82,6 +92,40 @@ export function LandingHero({ user }: Props) {
         </div>
       </section>
 
+      <section className="py-16 sm:py-20 border-t border-border">
+        <div className="container">
+          <div className="mx-auto max-w-2xl text-center mb-10">
+            <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+              Everything you need
+            </h2>
+            <p className="mt-3 text-muted-foreground">
+              From creating papers to viewing report cards.
+            </p>
+          </div>
+          <div className="mx-auto grid max-w-4xl grid-cols-1 gap-4 sm:grid-cols-2">
+            {[
+              { icon: Zap, title: "AI-generated questions", desc: "Enter a topic, get MCQs and long-answer questions in seconds." },
+              { icon: FileText, title: "MCQ & long form", desc: "Mix question types, set points, and mark correct answers." },
+              { icon: Link2, title: "Invite links", desc: "Share a link or email invite so students join your class." },
+              { icon: ClipboardList, title: "Report cards", desc: "Scores, letter grades, and per-question feedback for every submission." },
+            ].map((item) => (
+              <div
+                key={item.title}
+                className="flex gap-4 rounded-xl border border-border bg-card p-5"
+              >
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted">
+                  <item.icon className="size-5 text-foreground" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-foreground">{item.title}</h3>
+                  <p className="mt-1 text-sm text-muted-foreground">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="py-20 sm:py-28 border-t border-border">
         <div className="container">
           <div className="mx-auto max-w-2xl text-center mb-14">
@@ -135,6 +179,108 @@ export function LandingHero({ user }: Props) {
                 </Link>
               </Button>
             )}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16 sm:py-20 border-t border-border bg-muted/30">
+        <div className="container">
+          <div className="mx-auto max-w-2xl text-center mb-10">
+            <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+              For teachers and students
+            </h2>
+            <p className="mt-3 text-muted-foreground">
+              One platform for creating assessments and taking them.
+            </p>
+          </div>
+          <div className="mx-auto grid max-w-4xl grid-cols-1 gap-6 md:grid-cols-2">
+            <div className="rounded-xl border border-border bg-card p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                  <GraduationCap className="size-5 text-foreground" />
+                </div>
+                <h3 className="text-lg font-semibold text-foreground">Teachers</h3>
+              </div>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li className="flex items-center gap-2">
+                  <span className="size-1.5 rounded-full bg-foreground/40" />
+                  Create and manage question papers
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="size-1.5 rounded-full bg-foreground/40" />
+                  Generate questions from any topic with AI
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="size-1.5 rounded-full bg-foreground/40" />
+                  Invite students via link or email
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="size-1.5 rounded-full bg-foreground/40" />
+                  View all student report cards in one place
+                </li>
+              </ul>
+            </div>
+            <div className="rounded-xl border border-border bg-card p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                  <Send className="size-5 text-foreground" />
+                </div>
+                <h3 className="text-lg font-semibold text-foreground">Students</h3>
+              </div>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li className="flex items-center gap-2">
+                  <span className="size-1.5 rounded-full bg-foreground/40" />
+                  See papers assigned by your teacher
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="size-1.5 rounded-full bg-foreground/40" />
+                  Answer MCQs and long questions online
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="size-1.5 rounded-full bg-foreground/40" />
+                  Submit in one go and get graded by AI
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="size-1.5 rounded-full bg-foreground/40" />
+                  View your report card with score and feedback
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16 sm:py-20 border-t border-border">
+        <div className="container">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+              Ready to save time?
+            </h2>
+            <p className="mt-3 text-muted-foreground">
+              Create your first paper or sign in to get started.
+            </p>
+            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+              {!user ? (
+                <>
+                  <Button asChild size="lg" className="w-full sm:w-auto px-8">
+                    <Link href="/auth/signup">
+                      Get started free
+                      <ArrowRight className="ml-2 size-4" />
+                    </Link>
+                  </Button>
+                  <Button variant="outline" size="lg" asChild className="w-full sm:w-auto px-8">
+                    <Link href="/auth/login">Log in</Link>
+                  </Button>
+                </>
+              ) : (
+                <Button asChild size="lg" className="px-8">
+                  <Link href="/dashboard">
+                    Go to dashboard
+                    <ArrowRight className="ml-2 size-4" />
+                  </Link>
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </section>

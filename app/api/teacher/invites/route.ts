@@ -56,7 +56,7 @@ export async function POST(request: Request) {
     const resendKey = process.env.RESEND_API_KEY;
     if (sendEmail && resendKey) {
       const resend = new Resend(resendKey);
-      const from = process.env.RESEND_FROM ?? "Grading <onboarding@resend.dev>";
+      const from = process.env.RESEND_FROM ?? "Grading.AI <onboarding@resend.dev>";
       const { error } = await resend.emails.send({
         from,
         to: [email],

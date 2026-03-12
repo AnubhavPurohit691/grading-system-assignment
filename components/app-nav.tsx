@@ -35,7 +35,7 @@ export function AppNav({
               <Sparkles className="size-4 text-foreground relative z-10 group-hover:text-background transition-colors" />
             </div>
             <span className="font-extrabold tracking-tight bg-gradient-to-r from-foreground to-foreground group-hover:from-cyan-600 group-hover:to-fuchsia-600 dark:group-hover:from-cyan-400 dark:group-hover:to-fuchsia-400 bg-clip-text group-hover:text-transparent transition-all duration-300">
-              Grading
+              Grading.AI
             </span>
           </Link>
           

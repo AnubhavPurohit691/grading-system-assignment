@@ -7,6 +7,9 @@ import { prisma } from "@/lib/db";
 import { Prisma } from "@/generated/prisma/client";
 
 export type PaperActionResult = { error?: string };
+export type QuestionActionResult = { error?: string };
+
+// --- Paper CRUD ---
 
 export async function createPaperAction(
   _prev: PaperActionResult,
@@ -67,7 +70,30 @@ export async function deletePaperAction(paperId: string): Promise<void> {
   redirect("/question-papers");
 }
 
-export type QuestionActionResult = { error?: string };
+// --- Question form parsing (shared by create/update) ---
+
+function parseQuestionFormData(formData: FormData): { error: string } | { questionText: string; points: number; options: string[] | undefined; answer: string | null } {
+  const questionText = (formData.get("question") as string)?.trim();
+  if (!questionText) return { error: "Question is required" };
+  const points = Math.max(0, Number(formData.get("points")) || 0);
+  const type = (formData.get("type") as string) || "long";
+
+  if (type === "mcq") {
+    const o1 = (formData.get("option1") as string)?.trim() ?? "";
+    const o2 = (formData.get("option2") as string)?.trim() ?? "";
+    const o3 = (formData.get("option3") as string)?.trim() ?? "";
+    const o4 = (formData.get("option4") as string)?.trim() ?? "";
+    const options = [o1, o2, o3, o4].filter(Boolean);
+    if (options.length < 2) return { error: "MCQ needs at least 2 options" };
+    const correctIndex = Math.max(0, Math.min(3, Number(formData.get("correctIndex")) || 0));
+    const answer = options[correctIndex] ?? options[0];
+    return { questionText, points, options, answer };
+  }
+  const answer = (formData.get("answer") as string)?.trim() || null;
+  return { questionText, points, options: undefined, answer };
+}
+
+// --- Question CRUD ---
 
 export async function createQuestionAction(
   paperId: string,
@@ -82,29 +108,18 @@ export async function createQuestionAction(
   });
   if (!paper) return { error: "Paper not found" };
 
-  const questionText = (formData.get("question") as string)?.trim();
-  if (!questionText) return { error: "Question is required" };
-  const points = Math.max(0, Number(formData.get("points")) || 0);
-  const type = (formData.get("type") as string) || "long";
+  const parsed = parseQuestionFormData(formData);
+  if ("error" in parsed) return { error: parsed.error };
 
-  let options: string[] | undefined;
-  let answer: string | undefined;
-
-  if (type === "mcq") {
-    const o1 = (formData.get("option1") as string)?.trim() ?? "";
-    const o2 = (formData.get("option2") as string)?.trim() ?? "";
-    const o3 = (formData.get("option3") as string)?.trim() ?? "";
-    const o4 = (formData.get("option4") as string)?.trim() ?? "";
-    options = [o1, o2, o3, o4].filter(Boolean);
-    if (options.length < 2) return { error: "MCQ needs at least 2 options" };
-    const correctIndex = Math.max(0, Math.min(3, Number(formData.get("correctIndex")) || 0));
-    answer = options[correctIndex] ?? options[0];
-  } else {
-    answer = (formData.get("answer") as string)?.trim() || undefined;
-  }
-
+  const { questionText, points, options, answer } = parsed;
   await prisma.question.create({
-    data: { questionPaperId: paperId, question: questionText, answer: answer || undefined, points, options: options?.length ? options : undefined },
+    data: {
+      questionPaperId: paperId,
+      question: questionText,
+      answer: answer || undefined,
+      points,
+      options: options?.length ? options : undefined,
+    },
   });
   revalidatePath(`/question-papers/${paperId}`);
   return {};
@@ -129,31 +144,18 @@ export async function updateQuestionAction(
   });
   if (!existing) return { error: "Question not found" };
 
-  const questionText = (formData.get("question") as string)?.trim();
-  if (!questionText) return { error: "Question is required" };
-  const points = Math.max(0, Number(formData.get("points")) || 0);
-  const type = (formData.get("type") as string) || "long";
+  const parsed = parseQuestionFormData(formData);
+  if ("error" in parsed) return { error: parsed.error };
 
-  let options: string[] | undefined;
-  let answer: string | null;
-
-  if (type === "mcq") {
-    const o1 = (formData.get("option1") as string)?.trim() ?? "";
-    const o2 = (formData.get("option2") as string)?.trim() ?? "";
-    const o3 = (formData.get("option3") as string)?.trim() ?? "";
-    const o4 = (formData.get("option4") as string)?.trim() ?? "";
-    options = [o1, o2, o3, o4].filter(Boolean);
-    if (options.length < 2) return { error: "MCQ needs at least 2 options" };
-    const correctIndex = Math.max(0, Math.min(3, Number(formData.get("correctIndex")) || 0));
-    answer = options[correctIndex] ?? options[0];
-  } else {
-    answer = (formData.get("answer") as string)?.trim() || null;
-    options = undefined;
-  }
-
+  const { questionText, points, options, answer } = parsed;
   await prisma.question.update({
     where: { id: questionId },
-    data: { question: questionText, answer, points, options: options ?? Prisma.JsonNull },
+    data: {
+      question: questionText,
+      answer,
+      points,
+      options: options ?? Prisma.JsonNull,
+    },
   });
   revalidatePath(`/question-papers/${paperId}`);
   return {};

@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { prisma } from "@/lib/db";
+import { AUTH_COOKIE_NAME } from "@/lib/constants";
 
 export type CurrentUser = {
   id: string;
@@ -12,7 +13,7 @@ export type CurrentUser = {
 /** Returns teacherId if the request has a valid teacher session, else null. */
 export async function getTeacherIdFromCookies(): Promise<string | null> {
   const cookieStore = await cookies();
-  const token = cookieStore.get("gradingtoken")?.value;
+  const token = cookieStore.get(AUTH_COOKIE_NAME)?.value;
   if (!token) return null;
   const secret = process.env.JWT_SECRET;
   if (!secret) return null;
@@ -31,7 +32,7 @@ export async function getTeacherIdFromCookies(): Promise<string | null> {
 /** Returns studentId if the request has a valid student session, else null. */
 export async function getStudentIdFromCookies(): Promise<string | null> {
   const cookieStore = await cookies();
-  const token = cookieStore.get("gradingtoken")?.value;
+  const token = cookieStore.get(AUTH_COOKIE_NAME)?.value;
   if (!token) return null;
   const secret = process.env.JWT_SECRET;
   if (!secret) return null;
@@ -71,7 +72,7 @@ export async function getStudentTeacher(): Promise<{
 /** Returns current user if authenticated, else null. */
 export async function getCurrentUser(): Promise<CurrentUser | null> {
   const cookieStore = await cookies();
-  const token = cookieStore.get("gradingtoken")?.value;
+  const token = cookieStore.get(AUTH_COOKIE_NAME)?.value;
   if (!token) return null;
   const secret = process.env.JWT_SECRET;
   if (!secret) return null;

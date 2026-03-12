@@ -5,7 +5,7 @@ import { prisma } from "@/lib/db";
 import { QuestionPapersClient } from "./question-papers-client";
 
 export const metadata: Metadata = {
-  title: "Question papers — Grading",
+  title: "Question papers",
   description: "Create and manage your question papers.",
 };
 

@@ -10,7 +10,7 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { submissionId } = await params;
   return {
-    title: `Report — Grading`,
+    title: "Report",
     description: `View student report`,
   };
 }

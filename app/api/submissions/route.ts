@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db";
 import { runAutoGrade } from "@/lib/grading/run";
 import { getAuthFromRequest, getStudentContextFromRequest } from "@/proxy";
 import { NextResponse } from "next/server";
+import { AUTH_MESSAGE_NOT_AUTHENTICATED } from "@/lib/constants";
 
 export async function POST(request: Request) {
   const ctx = getStudentContextFromRequest(request);
@@ -134,7 +135,7 @@ export async function POST(request: Request) {
 export async function GET(request: Request) {
   const auth = getAuthFromRequest(request);
   if (!auth) {
-    return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
+    return NextResponse.json({ message: AUTH_MESSAGE_NOT_AUTHENTICATED }, { status: 401 });
   }
 
   try {

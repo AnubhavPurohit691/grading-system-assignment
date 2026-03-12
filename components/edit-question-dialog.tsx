@@ -16,18 +16,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { updateQuestionAction } from "@/lib/actions/papers";
+import type { PaperDetailQuestion } from "@/lib/types/papers";
 import { ListOrdered, CircleDot } from "lucide-react";
 
 type QType = "mcq" | "long";
-
-type Question = {
-  id: string;
-  question: string;
-  options: unknown;
-  answer: string | null;
-  points: number;
-  sortOrder: number;
-};
 
 function getOptionsArray(opts: unknown): string[] {
   if (!Array.isArray(opts)) return ["", "", "", ""];
@@ -44,7 +36,7 @@ export function EditQuestionDialog({
   onSaved,
 }: {
   paperId: string;
-  question: Question;
+  question: PaperDetailQuestion;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSaved?: () => void;
@@ -72,14 +64,14 @@ export function EditQuestionDialog({
   );
 
   useEffect(() => {
-    const opts = getOptionsArray(question.options);
+    const nextOpts = getOptionsArray(question.options);
     setQuestionText(question.question);
     setAnswer(question.answer ?? "");
     setPoints(question.points);
-    setOptions(opts);
-    const i = opts.findIndex((o) => o === (question.answer ?? ""));
-    setCorrectIndex(i >= 0 ? i : 0);
-    setType(opts.some(Boolean) ? "mcq" : "long");
+    setOptions(nextOpts);
+    const idx = nextOpts.findIndex((o) => o === (question.answer ?? ""));
+    setCorrectIndex(idx >= 0 ? idx : 0);
+    setType(nextOpts.some(Boolean) ? "mcq" : "long");
   }, [question]);
 
   useEffect(() => {

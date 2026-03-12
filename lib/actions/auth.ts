@@ -6,8 +6,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import type { Role } from "@/generated/prisma/enums";
 import { prisma } from "@/lib/db";
-
-const COOKIE_MAX_AGE = 60 * 60 * 24 * 30; // 30 days
+import { AUTH_COOKIE_NAME, AUTH_COOKIE_OPTIONS } from "@/lib/constants";
 
 export type AuthActionResult = { error?: string };
 
@@ -63,14 +62,7 @@ export async function loginAction(
   );
 
   const cookieStore = await cookies();
-  cookieStore.set("gradingtoken", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-    maxAge: COOKIE_MAX_AGE,
-  });
-
+  cookieStore.set(AUTH_COOKIE_NAME, token, AUTH_COOKIE_OPTIONS);
   redirect("/");
 }
 
@@ -149,13 +141,6 @@ export async function signupAction(
   );
 
   const cookieStore = await cookies();
-  cookieStore.set("gradingtoken", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-    maxAge: COOKIE_MAX_AGE,
-  });
-
+  cookieStore.set(AUTH_COOKIE_NAME, token, AUTH_COOKIE_OPTIONS);
   redirect("/");
 }

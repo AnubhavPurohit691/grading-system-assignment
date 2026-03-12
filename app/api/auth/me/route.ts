@@ -2,14 +2,15 @@ import { prisma } from "@/lib/db";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
+import { AUTH_COOKIE_NAME, AUTH_MESSAGE_NOT_AUTHENTICATED } from "@/lib/constants";
 
 export async function GET() {
   try {
     const cookieStore = await cookies();
-    const gradingtoken = cookieStore.get("gradingtoken")?.value;
-    if (!gradingtoken) {
+    const token = cookieStore.get(AUTH_COOKIE_NAME)?.value;
+    if (!token) {
       return NextResponse.json(
-        { message: "Not authenticated" },
+        { message: AUTH_MESSAGE_NOT_AUTHENTICATED },
         { status: 401 }
       );
     }
@@ -20,7 +21,7 @@ export async function GET() {
         { status: 500 }
       );
     }
-    const payload = jwt.verify(gradingtoken, jwtSecret) as {
+    const payload = jwt.verify(token, jwtSecret) as {
       userId: string;
       role: string;
     };
@@ -37,7 +38,7 @@ export async function GET() {
     return NextResponse.json({ user }, { status: 200 });
   } catch {
     return NextResponse.json(
-      { message: "Not authenticated" },
+      { message: AUTH_MESSAGE_NOT_AUTHENTICATED },
       { status: 401 }
     );
   }

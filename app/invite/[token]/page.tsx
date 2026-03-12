@@ -22,8 +22,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { token } = await params;
   const invite = await getInvite(token);
   if (!invite || invite.usedAt || invite.expiresAt < new Date())
-    return { title: "Invite — Grading" };
-  return { title: `Join ${invite.teacher.user.username}'s class — Grading`, description: "You're invited to join a class." };
+    return { title: "Invite" };
+  return { title: `Join ${invite.teacher.user.username}'s class`, description: "You're invited to join a class." };
 }
 
 export default async function InvitePage({ params }: Props) {

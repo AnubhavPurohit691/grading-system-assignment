@@ -1,8 +1,8 @@
 import { SignupForm } from "@/components/signup-form";
 
 export const metadata = {
-  title: "Sign up — Grading",
-  description: "Create a Grading account.",
+  title: "Sign up",
+  description: "Create a Grading.AI account.",
 };
 
 export default function SignupPage() {

@@ -2,8 +2,7 @@ import { prisma } from "@/lib/db";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-
-const COOKIE_MAX_AGE = 60 * 60 * 24 * 30; // 30 days
+import { AUTH_COOKIE_NAME, AUTH_COOKIE_OPTIONS } from "@/lib/constants";
 
 export async function POST(request: Request) {
   try {
@@ -70,13 +69,7 @@ export async function POST(request: Request) {
       { message: "Login successful", user: safeUser },
       { status: 200 }
     );
-    response.cookies.set("gradingtoken", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-      maxAge: COOKIE_MAX_AGE,
-    });
+    response.cookies.set(AUTH_COOKIE_NAME, token, AUTH_COOKIE_OPTIONS);
     return response;
   } catch {
     return NextResponse.json(
