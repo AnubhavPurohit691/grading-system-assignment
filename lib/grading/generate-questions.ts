@@ -14,7 +14,7 @@ export type GenerateQuestionsOptions = {
   longCount: number;
   context?: { paperName?: string; paperDescription?: string };
 };
-
+//
 function extractText(response: { content: string | unknown[] }): string {
   const c = response.content;
   if (typeof c === "string") return c;
