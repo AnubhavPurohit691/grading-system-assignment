@@ -227,8 +227,8 @@ export function PaperDetailClient({
               <div className="flex items-center gap-4">
                 <div className="h-10 w-1 border-l-4 border-foreground" />
                 <div>
-                   <h2 className="text-2xl font-black uppercase tracking-tighter italic text-foreground">Question Set</h2>
-                   <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Unit Management / Sequence</p>
+                   <h2 className="text-2xl font-black tracking-tighter italic text-foreground">Question Set</h2>
+                   <p className="text-[10px] font-bold tracking-widest text-muted-foreground">Unit Management / Sequence</p>
                 </div>
               </div>
               
@@ -253,7 +253,7 @@ export function PaperDetailClient({
 
             {questions.length === 0 ? (
               <div className="border border-dashed border-foreground/20 p-20 text-center">
-                <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
+                <p className="text-[10px] font-bold tracking-[0.3em] text-muted-foreground">
                   Data Structure Empty / Awaiting Input
                 </p>
               </div>
@@ -266,20 +266,20 @@ export function PaperDetailClient({
                   >
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-3 mb-3">
-                        <span className="text-[10px] font-black uppercase tracking-tighter bg-foreground text-background px-2 py-0.5">
+                        <span className="text-[10px] font-black tracking-tighter bg-foreground text-background px-2 py-0.5">
                           U-{String(i + 1).padStart(2, '0')}
                         </span>
-                        <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">
+                        <span className="text-[9px] font-black tracking-widest text-muted-foreground">
                           Value: {q.points} PTS / {Array.isArray(q.options) && (q.options as string[]).length >= 2 ? "TYPE: SELECT" : "TYPE: OPEN"}
                         </span>
                       </div>
-                      <p className="text-sm font-bold uppercase tracking-wide text-foreground leading-relaxed mb-4">
+                      <p className="text-sm font-bold tracking-wide text-foreground leading-relaxed mb-4">
                         {q.question}
                       </p>
                       {q.answer && (
                         <div className="flex items-start gap-2">
-                           <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground mt-0.5">Reference Answer:</span>
-                           <p className="text-[10px] font-medium uppercase text-muted-foreground italic">{q.answer}</p>
+                           <span className="text-[8px] font-black tracking-widest text-muted-foreground mt-0.5">Reference Answer:</span>
+                           <p className="text-[10px] font-medium text-foreground italic">{q.answer}</p>
                         </div>
                       )}
                     </div>

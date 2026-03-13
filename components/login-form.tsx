@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,7 +17,14 @@ import {
 import { loginAction } from "@/lib/actions/auth";
 
 export function LoginForm() {
+  const router = useRouter();
   const [state, formAction, isPending] = useActionState(loginAction, {});
+
+  useEffect(() => {
+    if (state?.success) {
+      router.replace("/dashboard");
+    }
+  }, [state?.success, router]);
 
   return (
     <Card className="w-full max-w-md opacity-0 animate-fade-in-up">

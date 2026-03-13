@@ -100,9 +100,9 @@ export function AttemptPaperClient({ paperId }: { paperId: string }) {
     return (
       <div className="container pt-24 sm:pt-40 grid-bg min-h-screen">
         <div className="max-w-2xl border-l-4 border-foreground pl-6">
-           <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mb-2">Error / Request Failure</p>
-           <h1 className="text-4xl font-black tracking-tighter text-foreground uppercase italic mb-6">Unit Load Error</h1>
-           <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">{error}</p>
+           <p className="text-[10px] font-black text-muted-foreground tracking-[0.3em] mb-2">Error / Request Failure</p>
+           <h1 className="text-4xl font-black tracking-tighter text-foreground italic mb-6">Unit Load Error</h1>
+           <p className="text-xs font-bold tracking-widest text-muted-foreground">{error}</p>
            <Button variant="outline" asChild className="mt-10">
               <Link href="/student/papers">Return to Index</Link>
            </Button>
@@ -116,7 +116,7 @@ export function AttemptPaperClient({ paperId }: { paperId: string }) {
       <div className="container flex min-h-screen flex-col items-center justify-start pt-24 sm:pt-40 grid-bg">
         <div className="flex flex-col items-center gap-4">
            <Loader2 className="size-8 animate-spin text-foreground" />
-           <span className="text-[10px] font-black uppercase tracking-[0.4em]">Initializing Unit...</span>
+           <span className="text-[10px] font-black tracking-[0.4em]">Initializing Unit...</span>
         </div>
       </div>
     );
@@ -125,16 +125,16 @@ export function AttemptPaperClient({ paperId }: { paperId: string }) {
   return (
     <div className="container pt-24 pb-12 sm:pt-40 sm:pb-20 animate-slide-up grid-bg min-h-screen">
       <div className="mx-auto max-w-3xl space-y-16">
-        <Link href="/student/papers" className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground transition-colors">
+        <Link href="/student/papers" className="inline-flex items-center gap-2 text-[10px] font-black tracking-[0.3em] text-muted-foreground hover:text-foreground transition-colors">
           <ArrowLeft className="size-3" />
           Abort Session / Return
         </Link>
 
         <div className="border-l-4 border-foreground pl-6">
-          <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mb-2">Active Assessment / Session ID: {paper.id.slice(0,8)}</p>
-          <h1 className="text-4xl font-black tracking-tighter text-foreground uppercase italic mb-2">{paper.name}</h1>
+          <p className="text-[10px] font-black text-muted-foreground tracking-[0.3em] mb-2">Active Assessment / Session ID: {paper.id.slice(0,8)}</p>
+          <h1 className="text-4xl font-black tracking-tighter text-foreground italic mb-2">{paper.name}</h1>
           {paper.description && (
-            <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground leading-relaxed max-w-xl">{paper.description}</p>
+            <p className="text-[11px] font-bold tracking-widest text-muted-foreground leading-relaxed max-w-xl">{paper.description}</p>
           )}
         </div>
 
@@ -147,15 +147,15 @@ export function AttemptPaperClient({ paperId }: { paperId: string }) {
             return (
               <div key={q.id} className="group border border-foreground/10 bg-background p-8 hover:border-foreground/30 transition-all">
                 <div className="flex items-center justify-between gap-4 mb-6">
-                  <span className="text-[10px] font-black uppercase tracking-tighter bg-foreground text-background px-2 py-0.5">
+                  <span className="text-[10px] font-black tracking-tighter bg-foreground text-background px-2 py-0.5">
                     Unit {String(idx + 1).padStart(2, '0')}
                   </span>
-                  <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">
+                  <span className="text-[9px] font-black tracking-widest text-muted-foreground">
                     Value: {q.points} PTS / {isMcq ? "TYPE: SELECT" : "TYPE: OPEN"}
                   </span>
                 </div>
                 
-                <p className="text-sm font-bold uppercase tracking-wide text-foreground leading-relaxed mb-8">{q.question}</p>
+                <p className="text-sm font-bold tracking-wide text-foreground leading-relaxed mb-8">{q.question}</p>
                 
                 {isMcq ? (
                   <div className="grid grid-cols-1 gap-3">
@@ -163,7 +163,7 @@ export function AttemptPaperClient({ paperId }: { paperId: string }) {
                       <label
                         key={i}
                         className={cn(
-                          "flex cursor-pointer items-center gap-4 border p-4 text-[11px] font-bold uppercase tracking-widest transition-all",
+                          "flex cursor-pointer items-center gap-4 border p-4 text-[11px] font-bold tracking-widest transition-all",
                           answers[q.id] === opt
                             ? "border-foreground bg-foreground text-background"
                             : "border-foreground/10 hover:border-foreground/30 text-foreground"

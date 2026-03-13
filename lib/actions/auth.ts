@@ -1,6 +1,5 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -8,13 +7,14 @@ import type { Role } from "@/generated/prisma/enums";
 import { prisma } from "@/lib/db";
 import { AUTH_COOKIE_NAME, AUTH_COOKIE_OPTIONS } from "@/lib/constants";
 
-export type AuthActionResult = { error?: string };
+export type AuthActionResult = { error?: string; success?: boolean };
 
 export async function loginAction(
   _prev: AuthActionResult,
   formData: FormData
 ): Promise<AuthActionResult> {
-  const email = (formData.get("email") as string)?.trim();
+  const rawEmail = (formData.get("email") as string)?.trim();
+  const email = rawEmail?.toLowerCase();
   const password = formData.get("password") as string;
 
   if (!email || !password) {
@@ -63,14 +63,15 @@ export async function loginAction(
 
   const cookieStore = await cookies();
   cookieStore.set(AUTH_COOKIE_NAME, token, AUTH_COOKIE_OPTIONS);
-  redirect("/");
+  return { success: true };
 }
 
 export async function signupAction(
   _prev: AuthActionResult,
   formData: FormData
 ): Promise<AuthActionResult> {
-  const email = (formData.get("email") as string)?.trim();
+  const rawEmail = (formData.get("email") as string)?.trim();
+  const email = rawEmail?.toLowerCase();
   const password = formData.get("password") as string;
   const username = (formData.get("username") as string)?.trim();
   const role = formData.get("role") as string;
@@ -142,5 +143,5 @@ export async function signupAction(
 
   const cookieStore = await cookies();
   cookieStore.set(AUTH_COOKIE_NAME, token, AUTH_COOKIE_OPTIONS);
-  redirect("/");
+  return { success: true };
 }

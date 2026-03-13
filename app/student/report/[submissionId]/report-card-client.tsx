@@ -64,9 +64,9 @@ export function ReportCardClient({
     return (
       <div className="container pt-24 sm:pt-40 grid-bg min-h-screen">
         <div className="max-w-2xl border-l-4 border-foreground pl-6">
-           <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mb-2">Error / Retrieval Failure</p>
-           <h1 className="text-4xl font-black tracking-tighter text-foreground uppercase italic mb-6">Report Not Found</h1>
-           <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">{error}</p>
+           <p className="text-[10px] font-black text-muted-foreground tracking-[0.3em] mb-2">Error / Retrieval Failure</p>
+           <h1 className="text-4xl font-black tracking-tighter text-foreground italic mb-6">Report Not Found</h1>
+           <p className="text-xs font-bold tracking-widest text-muted-foreground">{error}</p>
            <Button variant="outline" asChild className="mt-10">
               <Link href={backLink.href}>{backLink.label}</Link>
            </Button>
@@ -80,7 +80,7 @@ export function ReportCardClient({
       <div className="container flex min-h-screen flex-col items-center justify-start pt-24 sm:pt-40 grid-bg">
         <div className="flex flex-col items-center gap-4">
            <Loader2 className="size-8 animate-spin text-foreground" />
-           <span className="text-[10px] font-black uppercase tracking-[0.4em]">Generating Evaluation...</span>
+           <span className="text-[10px] font-black tracking-[0.4em]">Generating Evaluation...</span>
         </div>
       </div>
     );
@@ -100,7 +100,7 @@ export function ReportCardClient({
   return (
     <div className="container pt-24 pb-12 sm:pt-40 sm:pb-20 animate-slide-up grid-bg min-h-screen">
       <div className="mx-auto max-w-4xl space-y-16">
-        <Link href={backLink.href} className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground transition-colors">
+        <Link href={backLink.href} className="inline-flex items-center gap-2 text-[10px] font-black tracking-[0.3em] text-muted-foreground hover:text-foreground transition-colors">
           <ArrowLeft className="size-3" />
           {backLink.label}
         </Link>
@@ -108,10 +108,10 @@ export function ReportCardClient({
         {/* Header Unit */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-l-4 border-foreground pl-6">
           <div className="flex flex-col gap-4">
-            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mb-2">Evaluation Report / Record ID: {submission.id.slice(0,8)}</p>
-            <h1 className="text-5xl font-black tracking-tighter text-foreground uppercase italic leading-none">{submission.questionPaper.name}</h1>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-              Processing Date: {submission.checkedAt ? new Date(submission.checkedAt).toLocaleString().toUpperCase() : "PENDING"}
+            <p className="text-[10px] font-black text-muted-foreground tracking-[0.3em] mb-2">Evaluation Report / Record ID: {submission.id.slice(0,8)}</p>
+            <h1 className="text-5xl font-black tracking-tighter text-foreground italic leading-none">{submission.questionPaper.name}</h1>
+            <p className="text-[10px] font-bold tracking-widest text-muted-foreground">
+              Processing Date: {submission.checkedAt ? new Date(submission.checkedAt).toLocaleString() : "PENDING"}
             </p>
           </div>
           <Button variant="outline" size="sm" onClick={() => window.print()} className="gap-2 h-10 px-6">
@@ -123,15 +123,15 @@ export function ReportCardClient({
         {/* Metrics Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-foreground/10 border border-foreground/10">
           <div className="bg-background p-10 text-center">
-            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground mb-4">Final Score</p>
+            <p className="text-[10px] font-black tracking-[0.4em] text-muted-foreground mb-4">Final Score</p>
             <p className="text-4xl font-black text-foreground">{totalEarned} / {totalMax}</p>
           </div>
           <div className="bg-background p-10 text-center">
-            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground mb-4">Precision</p>
+            <p className="text-[10px] font-black tracking-[0.4em] text-muted-foreground mb-4">Precision</p>
             <p className="text-4xl font-black text-foreground">{percentage}%</p>
           </div>
           <div className="bg-background p-10 text-center border-t sm:border-t-0 sm:border-l border-foreground/10">
-            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground mb-4">Grade Tier</p>
+            <p className="text-[10px] font-black tracking-[0.4em] text-muted-foreground mb-4">Grade Tier</p>
             <p className="text-4xl font-black text-foreground italic">{submission.letterGrade?.replace("_", " ") ?? "—"}</p>
           </div>
         </div>
@@ -141,8 +141,8 @@ export function ReportCardClient({
           <div className="flex items-center gap-4">
              <div className="h-10 w-1 border-l-4 border-foreground" />
              <div>
-                <h2 className="text-2xl font-black uppercase tracking-tighter italic text-foreground">Performance Breakdown</h2>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Unit-by-Unit Analysis</p>
+                <h2 className="text-2xl font-black tracking-tighter italic text-foreground">Performance Breakdown</h2>
+                <p className="text-[10px] font-bold tracking-widest text-muted-foreground">Unit-by-Unit Analysis</p>
              </div>
           </div>
 
@@ -163,23 +163,23 @@ export function ReportCardClient({
                 >
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-3 mb-4">
-                      <span className="text-[10px] font-black uppercase tracking-tighter bg-foreground text-background px-2 py-0.5">
+                      <span className="text-[10px] font-black tracking-tighter bg-foreground text-background px-2 py-0.5">
                         Unit {String(idx + 1).padStart(2, '0')}
                       </span>
                       <span className={cn(
-                        "text-[9px] font-black uppercase tracking-widest",
+                        "text-[9px] font-black tracking-widest",
                         sa.isCorrect ? "text-muted-foreground" : "text-destructive"
                       )}>
                         Result: {sa.isCorrect ? "PASSED" : "FAILED"} / Earned: {sa.pointsEarned ?? 0} PTS
                       </span>
                     </div>
-                    <p className="text-sm font-bold uppercase tracking-wide text-foreground leading-relaxed mb-6">
+                    <p className="text-sm font-bold tracking-wide text-foreground leading-relaxed mb-6">
                       {sa.question?.question}
                     </p>
                     <div className="space-y-3">
                        <div className="flex items-start gap-2">
-                          <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground mt-0.5">Input Data:</span>
-                          <p className="text-[10px] font-medium uppercase text-foreground italic">{sa.answer || "NULL_DATA"}</p>
+                          <span className="text-[8px] font-black tracking-widest text-muted-foreground mt-0.5">Input Data:</span>
+                          <p className="text-[10px] font-medium text-foreground italic">{sa.answer || "NULL_DATA"}</p>
                        </div>
                     </div>
                   </div>

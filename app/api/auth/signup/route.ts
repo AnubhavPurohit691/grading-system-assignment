@@ -6,7 +6,12 @@ import { AUTH_COOKIE_NAME, AUTH_COOKIE_OPTIONS } from "@/lib/constants";
 
 export async function POST(request: Request) {
   try {
-    const { email, password, role, username } = await request.json();
+    const body = await request.json();
+    const rawEmail = typeof body?.email === "string" ? body.email.trim() : "";
+    const email = rawEmail.toLowerCase();
+    const password = body?.password;
+    const role = body?.role;
+    const username = typeof body?.username === "string" ? body.username.trim() : "";
     if (!email || !password || !role || !username) {
       return NextResponse.json(
         { message: "Email, password, username and role are required" },

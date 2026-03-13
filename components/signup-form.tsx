@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useActionState, useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -24,6 +24,7 @@ import {
 import { signupAction } from "@/lib/actions/auth";
 
 export function SignupForm() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const inviteToken = searchParams.get("invite")?.trim() ?? null;
   const isInviteFlow = Boolean(inviteToken);
@@ -32,6 +33,12 @@ export function SignupForm() {
   const [inviteEmail, setInviteEmail] = useState<string | null>(null);
   const [inviteTeacherName, setInviteTeacherName] = useState<string | null>(null);
   const [state, formAction, isPending] = useActionState(signupAction, {});
+
+  useEffect(() => {
+    if (state?.success) {
+      router.replace("/dashboard");
+    }
+  }, [state?.success, router]);
 
   const effectiveRole: "TEACHER" | "STUDENT" = isInviteFlow ? "STUDENT" : role;
 

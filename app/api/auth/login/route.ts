@@ -6,7 +6,10 @@ import { AUTH_COOKIE_NAME, AUTH_COOKIE_OPTIONS } from "@/lib/constants";
 
 export async function POST(request: Request) {
   try {
-    const { email, password } = await request.json();
+    const body = await request.json();
+    const rawEmail = typeof body?.email === "string" ? body.email.trim() : "";
+    const email = rawEmail.toLowerCase();
+    const password = body?.password;
     if (!email || !password) {
       return NextResponse.json(
         { message: "Email and password are required" },
