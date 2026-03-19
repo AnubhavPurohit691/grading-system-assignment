@@ -10,13 +10,10 @@ export const metadata: Metadata = {
 
 export default async function Home() {
   const user = await getCurrentUser();
-  if (user) {
-    redirect("/dashboard");
-  }
 
   return (
     <LandingHero
-      user={null}
+      user={user}
     />
   );
 }
